@@ -21,11 +21,13 @@
     "configuration": {
         "browser": {
             "title": "Chào mừng. Vui lòng chọn trình duyệt web của bạn.",
+            "subtitle": "KiWin sẽ tự động cài đặt trình duyệt này. Bạn cũng có thể bỏ qua bước này nếu đã có trình duyệt ưng ý.",
             "skip": "Không cài trình duyệt"
         },
         "review": {
             "title": "Hệ thống sẵn sàng để dọn. Vui lòng kiểm tra lại.",
             "empty": "Không có mục nào.",
+            "preset": "Chế độ",
             "guidance": "Danh sách bên trái hiển thị mọi thứ KiWin sẽ thực hiện trên hệ thống của bạn. Nếu có gì đó bạn không muốn, bạn có thể xóa các mục khỏi danh sách.\n\nNếu mọi thứ đều ổn, hãy chọn \"Bắt đầu\".",
             "no_browser_warning": "Sẽ không cài trình duyệt nào.",
             "no_internet_info": "Bạn không kết nối internet. KiWin sẽ không cài trình duyệt.",

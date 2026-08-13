@@ -46,6 +46,7 @@ public partial class ReviewPage : UserControl
         NoInternetInfo.Text = Localization.T("configuration.review.no_internet_info");
         NoUpdatesWarning.Text = Localization.T("configuration.review.no_updates_warning");
         EmptyText.Text = Localization.T("configuration.review.empty");
+        PresetLabel.Text = Localization.T("configuration.review.preset");
         BackButton.Content = Localization.T("configuration.review.back");
         ResetButton.Content = Localization.T("configuration.review.reset_defaults");
         AdvancedButton.Content = Localization.T("configuration.review.advanced");
@@ -53,10 +54,10 @@ public partial class ReviewPage : UserControl
 
         var plan = InstallPlan.LoadInstallPlan();
         var selectedBrowser = plan.GetString("selected_browser_package").Trim();
-        NoBrowserWarning.Visibility = selectedBrowser.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
-        NoInternetInfo.Visibility = InternetAvailable ? Visibility.Collapsed : Visibility.Visible;
+        NoBrowserChip.Visibility = selectedBrowser.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+        NoInternetChip.Visibility = InternetAvailable ? Visibility.Collapsed : Visibility.Visible;
         var updatesEnabled = InstallPlan.IsItemEnabled(plan, "configure-updates");
-        NoUpdatesWarning.Visibility = updatesEnabled ? Visibility.Collapsed : Visibility.Visible;
+        NoUpdatesChip.Visibility = updatesEnabled ? Visibility.Collapsed : Visibility.Visible;
 
         PresetCombo.Items.Clear();
         var presets = StepCatalog.PresetOptions();

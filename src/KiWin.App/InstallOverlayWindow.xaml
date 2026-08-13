@@ -11,18 +11,31 @@
         AllowsTransparency="True"
         Background="Transparent"
         Cursor="None"
-        Opacity="0.92"
+        Opacity="0.94"
         WindowStartupLocation="CenterScreen">
-    <Border Background="#11111B">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="720">
-            <TextBlock x:Name="TitleText" FontSize="34" FontWeight="SemiBold"
-                       HorizontalAlignment="Center" Margin="0,0,0,10" />
-            <TextBlock x:Name="GuidanceText" FontSize="15" Foreground="#A6ADC8"
-                       TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
-                       Margin="0,0,0,34" />
-            <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,26" />
-            <TextBlock x:Name="StatusText" FontSize="16" HorizontalAlignment="Center"
-                       TextAlignment="Center" TextWrapping="Wrap" />
-        </StackPanel>
+    <Border Background="{StaticResource CrustBrush}">
+        <Border Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource BorderStrongBrush}"
+                BorderThickness="1" CornerRadius="24"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                MaxWidth="620" Padding="56,44"
+                Effect="{StaticResource ShadowLevel3}">
+            <StackPanel>
+                <Border Style="{StaticResource AppMark}" Width="56" Height="56" CornerRadius="14"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="K" FontSize="28" FontWeight="Bold"
+                               Foreground="{StaticResource OnAccentBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock x:Name="TitleText" FontSize="30" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,22,0,8" />
+                <TextBlock x:Name="GuidanceText" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}"
+                           TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
+                           Margin="0,0,0,32" MaxWidth="460" />
+                <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,28" />
+                <TextBlock x:Name="StatusText" FontSize="15" HorizontalAlignment="Center"
+                           TextAlignment="Center" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
     </Border>
 </Window>

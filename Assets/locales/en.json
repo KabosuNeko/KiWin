@@ -21,11 +21,13 @@
     "configuration": {
         "browser": {
             "title": "Welcome. Please select your web browser.",
+            "subtitle": "KiWin will install this browser automatically. You can also skip this step if you already have one you like.",
             "skip": "Do not install a browser"
         },
         "review": {
             "title": "System is ready to debloat. Please review.",
             "empty": "No items.",
+            "preset": "Preset",
             "guidance": "The list on the left shows everything KiWin is going to do to your system. If there's something you don't want it to do, you can remove items from the list.\n\nIf everything looks good to you, select \"Start.\"",
             "no_browser_warning": "No browser will be installed.",
             "no_internet_info": "You aren't connected to internet. KiWin won't install a browser.",
