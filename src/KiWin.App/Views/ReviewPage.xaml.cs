@@ -72,11 +72,22 @@ public partial class ReviewPage : UserControl
         }
         PresetCombo.SelectedIndex = idx;
 
-        var items = InstallPlan.VisibleEnabledItems(plan)
-            .Select(v => new ReviewItem(v.Key, v.Text, v.Tooltip))
+        var items = InstallPlan.VisibleAllItems(plan)
+            .Select(v => new ReviewItem(v.Key, v.Text, v.Tooltip, v.IsEnabled))
             .ToList();
         ItemsList.ItemsSource = items;
-        EmptyText.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        EmptyText.Visibility = items.Any(i => i.IsEnabled) ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void ToggleItem_Changed(object sender, RoutedEventArgs e)
+    {
+        if (sender is not CheckBox { Tag: string key } check || !check.IsLoaded)
+            return;
+        var data = InstallPlan.LoadInstallPlan();
+        InstallPlan.SetItemEnabled(data, key, check.IsChecked == true);
+        data["include_browser_install"] = InstallPlan.IsItemEnabled(data, "browser-installation");
+        InstallPlan.SaveInstallPlan(data);
+        Refresh();
     }
 
     private void PresetCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,25 +108,6 @@ public partial class ReviewPage : UserControl
         {
             _presetUpdating = false;
         }
-        Refresh();
-    }
-
-    private void RemoveItem_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is not Button { Tag: string key })
-            return;
-        var data = InstallPlan.LoadInstallPlan();
-        var items = new System.Text.Json.Nodes.JsonArray();
-        foreach (var item in data["items"]?.AsArray() ?? new System.Text.Json.Nodes.JsonArray())
-        {
-            var n = InstallPlan.NormalizeItem(item);
-            if (n.GetString("key") == key) n["enabled"] = false;
-            items.Add(n);
-        }
-        data["items"] = items;
-        InstallPlan.MarkCustom(data);
-        data["include_browser_install"] = InstallPlan.IsItemEnabled(data, "browser-installation");
-        InstallPlan.SaveInstallPlan(data);
         Refresh();
     }
 
@@ -141,4 +133,4 @@ public partial class ReviewPage : UserControl
     }
 }
 
-public record ReviewItem(string Key, string Text, string Tooltip);
+public record ReviewItem(string Key, string Text, string Tooltip, bool IsEnabled = false);

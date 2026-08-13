@@ -304,9 +304,16 @@ public static class Program
         if (winutilCfg is not JsonObject and not JsonArray) return (null, false);
         var winutil = winutilCfg.DeepClone();
         ApplyWinUtilToggles(plan, winutil);
-        AddOutlookRemoval(winutil);
+        AddOutlookRemoval(winutil, plan);
         var rawArgs = plan.GetString("win11debloat_args");
-        var win11Args = rawArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var win11Args = rawArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(a => !(a == "-RemoveApps" && !InstallPlan.IsItemEnabled(plan, "remove-apps")))
+            .Where(a => !(a == "-RemoveGamingApps" && !InstallPlan.IsItemEnabled(plan, "remove-gaming-apps")))
+            .ToList();
+        if (InstallPlan.IsItemEnabled(plan, "remove-apps") && !win11Args.Contains("-RemoveApps"))
+            win11Args.Add("-RemoveApps");
+        if (InstallPlan.IsItemEnabled(plan, "remove-gaming-apps") && !win11Args.Contains("-RemoveGamingApps"))
+            win11Args.Add("-RemoveGamingApps");
         var payload = new JsonObject
         {
             ["WinUtil"] = winutil,
@@ -345,21 +352,27 @@ public static class Program
 
         Set("WPFTweaksWPBT", InstallPlan.IsItemEnabled(plan, "wpbt"));
         Set("WPFTweaksPreventDeviceMetadataFromNetwork", InstallPlan.IsItemEnabled(plan, "prevent-device-companion-apps"));
+        Set("WPFTweaksRemoveOneDrive", InstallPlan.IsItemEnabled(plan, "remove-onedrive"));
     }
 
-    private static void AddOutlookRemoval(JsonNode winutil)
+    private static void AddOutlookRemoval(JsonNode winutil, JsonObject plan)
     {
         if (winutil is not JsonObject obj) return;
         var appx = obj["WPFAppx"] as JsonArray ?? new JsonArray();
         obj["WPFAppx"] = appx;
-        var required = new[]
+        var required = new List<string>();
+        if (InstallPlan.IsItemEnabled(plan, "remove-apps"))
+            required.Add("WPFAppxMicrosoft_OutlookForWindows");
+        if (InstallPlan.IsItemEnabled(plan, "remove-gaming-apps"))
         {
-            "WPFAppxMicrosoft_OutlookForWindows",
-            "WPFAppxMicrosoft_Xbox_TCUI",
-            "WPFAppxMicrosoft_XboxGamingOverlay",
-            "WPFAppxMicrosoft_XboxIdentityProvider",
-            "WPFAppxMicrosoft_XboxSpeechToTextOverlay",
-        };
+            required.AddRange(new[]
+            {
+                "WPFAppxMicrosoft_Xbox_TCUI",
+                "WPFAppxMicrosoft_XboxGamingOverlay",
+                "WPFAppxMicrosoft_XboxIdentityProvider",
+                "WPFAppxMicrosoft_XboxSpeechToTextOverlay",
+            });
+        }
         foreach (var app in required)
         {
             bool has = appx.Any(n => n is JsonValue jv && jv.TryGetValue<string>(out var s) && s == app);

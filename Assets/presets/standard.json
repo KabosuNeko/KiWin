@@ -14,7 +14,10 @@
     {"key": "debloat-windows-phase-two", "enabled": true},
     {"key": "configure-updates", "enabled": true},
     {"key": "prevent-device-companion-apps", "enabled": true},
-    {"key": "wpbt", "enabled": true}
+    {"key": "wpbt", "enabled": true},
+    {"key": "remove-onedrive", "enabled": true},
+    {"key": "remove-apps", "enabled": true},
+    {"key": "remove-gaming-apps", "enabled": true}
   ],
   "winutil_config": {
     "WPFTweaks": [
@@ -25,10 +28,8 @@
       "WPFTweaksWPBT",
       "WPFTweaksWidget",
       "WPFTweaksServices",
-      "WPFTweaksDisableExplorerAutoDiscovery",
       "WPFTweaksDisplay",
       "WPFTweaksRightClickMenu",
-      "WPFTweaksRevertStartMenu",
       "WPFTweaksRemoveOneDrive",
       "WPFTweaksRemoveHomeAndGallery",
       "WPFTweaksWindowsAI",
@@ -39,5 +40,5 @@
       "WPFTweaksRazerBlock"
     ]
   },
-  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSnapLayouts -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
 }

@@ -1,13 +1,10 @@
 # Update Policy Changer Pro
 # filename: update_policy_changer_pro.ps1
 #
-# This script makes a few small tweaks to ensure that Windows only receives security updates, leaving out "feature" updates, permanently.
-# This prevents Windows from reinstalling any extra applications or changes that the user doesn't want, ensuring only necessary changes.
-# Drivers are NOT blocked, so hardware/security driver updates still install.
-# This update script will work on Pro or above systems. It is recommended to use the regular variant of this script on Windows Home systems,
-# as that script essentially does the same thing, but only for 365 days.
-
-# Massive thanks to Skull Crusher (zombiehunternr1) for this script!
+# Limits Windows (Pro+) to security and driver updates only, permanently blocking feature updates.
+# Prevents unwanted system changes and re-installed bloatware.
+# Note: For Windows Home, use the regular variant (lasts 365 days).
+# Special thanks to Skull Crusher (zombiehunternr1).
 
 $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
 
