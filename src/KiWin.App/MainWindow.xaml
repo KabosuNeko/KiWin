@@ -19,10 +19,8 @@
                 Padding="16,10">
             <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
-                    <Border Style="{StaticResource AppMark}" Width="28" Height="28">
-                        <Image Source="pack://siteoforigin:,,,/media/ICON.ico" Width="20" Height="20"
-                               Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
+                    <Image Source="pack://siteoforigin:,,,/media/ICON.ico" Width="24" Height="24"
+                               Stretch="Uniform" VerticalAlignment="Center" />
                     <TextBlock Text="KiWin" FontSize="15" FontWeight="SemiBold" Margin="10,0,0,0"
                                VerticalAlignment="Center" />
                 </StackPanel>
