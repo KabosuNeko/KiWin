@@ -21,7 +21,7 @@
     "configuration": {
         "browser": {
             "title": "Chào mừng. Vui lòng chọn trình duyệt web của bạn.",
-            "subtitle": "KiWin sẽ tự động cài đặt trình duyệt này. Bạn cũng có thể bỏ qua bước này nếu đã có trình duyệt ưng ý.",
+            "subtitle": "KiWin sẽ gỡ cài đặt Microsoft Edge (bạn có thể tắt bước này, nhưng không được khuyến nghị). Đây là những trình duyệt tập trung vào quyền riêng tư, an toàn để bạn sử dụng hằng ngày.",
             "skip": "Không cài trình duyệt"
         },
         "review": {
@@ -75,15 +75,15 @@
         },
         "debloat_windows_phase_one": {
             "text": "Dọn Windows giai đoạn một (WinUtil)",
-            "tooltip": "KiWin sử dụng công cụ phổ biến và uy tín, WinUtil của ChrisTitusTech, như một phần của quá trình dọn. Toàn bộ quá trình được tự động hóa, bạn không cần làm gì. Không nên gỡ bỏ bước này."
+            "tooltip": "KiWin sử dụng WinUtil của ChrisTitusTech như một phần của quá trình dọn dẹp. Toàn bộ quá trình được tự động hóa, vì vậy không nên gỡ bỏ bước này."
         },
         "debloat_windows_phase_two": {
             "text": "Dọn Windows giai đoạn hai (Win11Debloat)",
-            "tooltip": "KiWin sử dụng công cụ phổ biến và uy tín, Win11Debloat của Raphire, như một phần của quá trình dọn. Toàn bộ quá trình được tự động hóa, bạn không cần làm gì. Không nên gỡ bỏ bước này."
+            "tooltip": "KiWin sử dụng Win11Debloat của Raphire như một phần của quá trình dọn dẹp. Toàn bộ quá trình được tự động hóa, vì vậy không nên gỡ bỏ bước này."
         },
         "configure_updates": {
             "text": "Đặt chính sách chỉ cập nhật bảo mật",
-            "tooltip": "Để ngăn Windows Update tái lập bloat và hoàn tác các thay đổi, KiWin đặt chính sách cập nhật trên hệ thống của bạn để chỉ nhận các bản cập nhật bảo mật, bỏ qua các bản cập nhật \"tính năng\" không phải bảo mật. Hiệu lực vĩnh viễn trên Windows Pro, nhưng chỉ 365 ngày trên Windows Home."
+            "tooltip": "KiWin giới hạn Windows chỉ nhận các bản cập nhật bảo mật, ngăn bloatware quay trở lại. Chặn này có hiệu lực vĩnh viễn trên Windows Pro và hết hạn sau 365 ngày trên Windows Home."
         },
         "developer_mode": {
             "text": "Chế độ nhà phát triển (ẩn lớp phủ cài đặt)",
@@ -112,19 +112,19 @@
     },
     "browsers": {
         "helium": {
-            "tooltip": "Helium là trình duyệt nhẹ, nhanh và hiện đại, tập trung vào hiệu năng và đơn giản."
+            "tooltip": "Helium là trình duyệt được khuyến nghị — thường được so sánh với Brave, nhưng hoạt động giống LibreWolf hơn cho nền tảng Chromium. Nó cung cấp quyền riêng tư ngay khi cài đặt và hỗ trợ uBlock Origin mà không có bloat, dù thiếu tính năng đồng bộ Sync và DRM."
         },
         "firefox": {
-            "tooltip": "Firefox không được khuyến nghị trừ khi cần thiết cho mục đích của bạn, vì nó bao gồm telemetry và nội dung tài trợ theo mặc định."
+            "tooltip": "Firefox không được khuyến nghị với cấu hình mặc định, nhưng nếu cấu hình đúng cách, nó là một trong những trình duyệt tốt nhất — nhờ các bản vá zero-day nhanh chóng trực tiếp từ Mozilla. Xem thiết lập tùy chỉnh của tôi: https://github.com/KabosuNeko/YuzuFox"
         },
         "waterfox": {
-            "tooltip": "Waterfox được khuyến nghị hơn Firefox, nhưng không bằng Brave. Nó dựa trên Firefox nhưng loại bỏ theo dõi và telemetry."
+            "tooltip": "Waterfox được khuyến nghị hơn Firefox ngay từ cài đặt mặc định vì telemetry và theo dõi đã được gỡ sẵn. Tuy nhiên, các bản vá zero-day thường bị trễ hơn so với Firefox gốc."
         },
         "brave": {
-            "tooltip": "Brave là trình duyệt được khuyến nghị, vì nó gần nhất với Chrome trong khi tôn trọng quyền riêng tư của bạn."
+            "tooltip": "Brave được khuyến nghị nhờ tương thích Chromium, hỗ trợ Manifest V3, trình chặn quảng cáo tích hợp và các bản vá zero-day nhanh. Dù mặc định khá phình to (bloated), KiWin sẽ tự động dọn dẹp nó. Nếu bạn không chắc nên chọn trình duyệt nào, hãy chọn Brave."
         },
         "librewolf": {
-            "tooltip": "LibreWolf chỉ được khuyến nghị cho người dùng am hiểu công nghệ. Nó được thiết kế cho quyền riêng tư và bảo mật tối đa, nhưng có thể khó sử dụng hơn."
+            "tooltip": "LibreWolf được khuyến nghị cho người dùng am hiểu công nghệ muốn quyền riêng tư và bảo mật tốt nhất. Dù hơi khắt khe cho việc sử dụng hằng ngày, nó nhận các bản vá zero-day nhanh hơn Waterfox (tuy vẫn chậm hơn Firefox gốc)."
         }
     },
     "errors": {
