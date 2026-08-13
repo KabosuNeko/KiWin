@@ -22,11 +22,8 @@
                 MaxWidth="620" Padding="56,44"
                 Effect="{StaticResource ShadowLevel3}">
             <StackPanel>
-                <Border Style="{StaticResource AppMark}" Width="56" Height="56" CornerRadius="14"
-                        HorizontalAlignment="Center">
-                    <Image Source="pack://siteoforigin:,,,/media/ICON.ico" Width="40" Height="40"
-                           Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
+                <Image Source="pack://siteoforigin:,,,/media/ICON.ico" Width="44" Height="44"
+                           Stretch="Uniform" HorizontalAlignment="Center" />
                 <TextBlock x:Name="TitleText" FontSize="30" FontWeight="SemiBold"
                            HorizontalAlignment="Center" Margin="0,22,0,8" />
                 <TextBlock x:Name="GuidanceText" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}"
