@@ -21,7 +21,7 @@
     "configuration": {
         "browser": {
             "title": "Welcome. Please select your web browser.",
-            "subtitle": "KiWin will install this browser automatically. You can also skip this step if you already have one you like.",
+            "subtitle": "KiWin will uninstall Microsoft Edge (You can turn it off, but it's not recommended). These are privacy-focused, secure browsers that you can use every day.",
             "skip": "Do not install a browser"
         },
         "review": {
@@ -75,15 +75,15 @@
         },
         "debloat_windows_phase_one": {
             "text": "Debloat Windows phase one (WinUtil)",
-            "tooltip": "KiWin uses a popular and well-established tool, WinUtil by ChrisTitusTech, as part of its debloating process. The whole process is automated, so you don't need to do anything. It is not recommended to remove this step."
+            "tooltip": "KiWin utilizes ChrisTitusTech's WinUtil as part of its debloating process. The entire process is fully automated, so removing this step is not recommended."
         },
         "debloat_windows_phase_two": {
             "text": "Debloat Windows phase two (Win11Debloat)",
-            "tooltip": "KiWin uses a popular and well-established tool, Win11Debloat by Raphire, as part of its debloating process. The whole process is automated, so you don't need to do anything. It is not recommended to remove this step."
+            "tooltip": "KiWin utilizes Raphire's Win11Debloat as part of its debloating process. The entire process is fully automated, so removing this step is not recommended."
         },
         "configure_updates": {
             "text": "Set security-only update policy",
-            "tooltip": "In order to prevent Windows updates from reintroducing bloat and undoing the changes made, KiWin sets an update policy on your system which results in only receiving security updates, leaving out non-security \"feature\" updates. It lasts permanently on Windows Pro, but only 365 days on Windows Home."
+            "tooltip": "KiWin restricts Windows to security updates only, preventing bloatware from returning. This block is permanent on Pro and expires after 365 days on Home."
         },
         "developer_mode": {
             "text": "Developer mode (hide installation overlay)",
@@ -96,23 +96,35 @@
         "wpbt": {
             "text": "Block WPBT (Windows Platform Binary Table)",
             "tooltip": "Prevents the WPBT firmware binary (a lower-level OEM mechanism) from running at boot. Some OEMs use it for legitimate purposes, but it can also be abused."
+        },
+        "remove_onedrive": {
+            "text": "Remove OneDrive",
+            "tooltip": "Uninstalls OneDrive and disables its sync service. Your OneDrive files are kept, but the app is removed. Reinstalling later is possible."
+        },
+        "remove_apps": {
+            "text": "Remove preinstalled apps",
+            "tooltip": "Removes bloatware apps such as Mail, People, Teams, Get Started, and more. Uninstalling is not reversible through KiWin, but apps can be reinstalled from the Microsoft Store."
+        },
+        "remove_gaming_apps": {
+            "text": "Remove Xbox and gaming apps",
+            "tooltip": "Removes the Xbox app, Game Bar and related gaming software. Turn this off if you play games on your PC."
         }
     },
     "browsers": {
         "helium": {
-            "tooltip": "Helium is a lightweight, fast and modern browser focused on performance and simplicity."
+            "tooltip": "Helium is a recommended browser—often compared to Brave, but acts more like LibreWolf for Chromium. It offers out-of-the-box privacy and uBlock Origin support without the bloat, though it lacks Sync and DRM."
         },
         "firefox": {
-            "tooltip": "Firefox is not recommended unless necessary for your purposes, as it includes telemetry and sponsored content by default."
+            "tooltip": "Firefox is not recommended out of the box, but with proper configuration, it is one of the best browsers—benefiting from rapid zero-day patches directly from Mozilla. Check out my custom setup: https://github.com/KabosuNeko/YuzuFox"
         },
         "waterfox": {
-            "tooltip": "Waterfox is recommended over Firefox, but not Brave. It's based on Firefox, but removes tracking and telemetry."
+            "tooltip": "Waterfox is recommended over Firefox out of the box as telemetry and tracking are pre-removed. However, zero-day patches are often delayed compared to upstream Firefox."
         },
         "brave": {
-            "tooltip": "Brave is the recommended browser, as it is the closest to Chrome while respecting your privacy."
+            "tooltip": "Brave is recommended with Chromium compatibility, Manifest V3, and built-in adblocking and fast zero-day patches. While notoriously bloated by default, KiWin automatically debloats it. If you're unsure which browser to choose, pick Brave."
         },
         "librewolf": {
-            "tooltip": "LibreWolf is only recommended for tech-savvy users. It is designed for maximum privacy and security, but can be harder to use."
+            "tooltip": "LibreWolf is recommended for tech-savvy users wanting the best privacy and security here. While slightly too strict for everyday use, it receives zero-day patches faster than Waterfox (though behind stock Firefox ofc)."
         }
     },
     "errors": {

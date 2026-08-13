@@ -96,6 +96,18 @@
         "wpbt": {
             "text": "Chặn WPBT (Windows Platform Binary Table)",
             "tooltip": "Ngăn mã firmware WPBT (cơ chế cấp thấp của OEM) chạy khi khởi động. Một số OEM dùng nó cho mục đích hợp pháp, nhưng nó cũng có thể bị lạm dụng."
+        },
+        "remove_onedrive": {
+            "text": "Gỡ OneDrive",
+            "tooltip": "Gỡ cài đặt OneDrive và tắt dịch vụ đồng bộ của nó. File OneDrive của bạn được giữ nguyên, chỉ gỡ ứng dụng. Vẫn có thể cài lại sau này."
+        },
+        "remove_apps": {
+            "text": "Gỡ ứng dụng cài sẵn",
+            "tooltip": "Gỡ các ứng dụng bloatware như Mail, People, Teams, Get Started... Việc gỡ không thể hoàn tác qua KiWin, nhưng có thể cài lại từ Microsoft Store."
+        },
+        "remove_gaming_apps": {
+            "text": "Gỡ ứng dụng Xbox và game",
+            "tooltip": "Gỡ ứng dụng Xbox, Game Bar và phần mềm game liên quan. Tắt nếu bạn có chơi game trên máy."
         }
     },
     "browsers": {

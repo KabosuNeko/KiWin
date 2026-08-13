@@ -27,12 +27,12 @@ public static class StepCatalog
     };
 
     public static readonly string[] BoolOptionSlugs =
-        { "developer-mode", "prevent-device-companion-apps", "wpbt" };
+        { "developer-mode", "prevent-device-companion-apps", "wpbt", "remove-onedrive", "remove-apps", "remove-gaming-apps" };
 
     public const string StandardPresetKey = "standard";
 
     public static bool DefaultBoolOptionEnabled(string slug) =>
-        slug is "prevent-device-companion-apps" or "wpbt";
+        slug is "prevent-device-companion-apps" or "wpbt" or "remove-onedrive" or "remove-apps" or "remove-gaming-apps";
 
     public static readonly Dictionary<string, StepPresentation> StepPresentation = new()
     {
@@ -44,6 +44,9 @@ public static class StepCatalog
         ["developer-mode"] = new("steps.developer_mode.text", "steps.developer_mode.tooltip"),
         ["prevent-device-companion-apps"] = new("steps.prevent_device_companion_apps.text", "steps.prevent_device_companion_apps.tooltip"),
         ["wpbt"] = new("steps.wpbt.text", "steps.wpbt.tooltip"),
+        ["remove-onedrive"] = new("steps.remove_onedrive.text", "steps.remove_onedrive.tooltip"),
+        ["remove-apps"] = new("steps.remove_apps.text", "steps.remove_apps.tooltip"),
+        ["remove-gaming-apps"] = new("steps.remove_gaming_apps.text", "steps.remove_gaming_apps.tooltip"),
     };
 
     public static readonly JsonObject DefaultWinutilConfig = new()
@@ -56,10 +59,8 @@ public static class StepCatalog
             "WPFTweaksWPBT",
             "WPFTweaksWidget",
             "WPFTweaksServices",
-            "WPFTweaksDisableExplorerAutoDiscovery",
             "WPFTweaksDisplay",
             "WPFTweaksRightClickMenu",
-            "WPFTweaksRevertStartMenu",
             "WPFTweaksRemoveOneDrive",
             "WPFTweaksRemoveHomeAndGallery",
             "WPFTweaksWindowsAI",
@@ -73,9 +74,9 @@ public static class StepCatalog
     public static readonly string[] DefaultWin11DebloatArgs =
     {
         "-Silent", "-RemoveApps", "-RemoveGamingApps", "-DisableTelemetry", "-DisableBing",
-        "-DisableSuggestions", "-DisableLockscreenTips", "-RevertContextMenu", "-TaskbarAlignLeft",
-        "-HideSearchTb", "-DisableWidgets", "-DisableCopilot", "-ClearStartAllUsers", "-DisableDVR",
-        "-DisableStartRecommended", "-ExplorerToThisPC", "-DisableMouseAcceleration",
+        "-DisableSuggestions", "-DisableLockscreenTips", "-RevertContextMenu",
+        "-DisableWidgets", "-DisableCopilot", "-ClearStartAllUsers", "-DisableDVR",
+        "-DisableStartRecommended", "-ExplorerToThisPC",
         "-DisableDesktopSpotlight", "-DisableSettings365Ads", "-DisableSettingsHome", "-DisablePaintAI",
         "-DisableNotepadAI", "-DisableEdgeAI", "-DisableStickyKeys", "-DisableEdgeAds",
         "-DisableBraveBloat", "-DisableRecall", "-DisableAISvcAutoStart", "-DisableClickToDo",

@@ -1,8 +1,8 @@
 # Edge Vanisher
 # filename: edge_vanisher.ps1
 #
-# This script's purpose is to remove Edge from Windows 11 systems and prevent the system from reinstalling it.
-# The user can still reinstall Edge by downloading it from Microsoft's website. Preserves msedgewebview2.
+# Removes Edge from Windows 11 and prevents re-installation, while preserving WebWebView2.
+# Edge can still be manually reinstalled from Microsoft's website.
 
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(

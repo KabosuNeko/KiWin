@@ -441,6 +441,40 @@ public static class InstallPlan
         return outList;
     }
 
+    public static List<VisibleItem> VisibleAllItems(JsonObject data)
+    {
+        var outList = new List<VisibleItem>();
+        var knownKeys = new HashSet<string>(StepCatalog.BoolOptionSlugs.Concat(StepCatalog.StepSlugs));
+        foreach (var item in data["items"]?.AsArray() ?? new JsonArray())
+        {
+            var n = NormalizeItem(item);
+            var key = n.GetString("key");
+            if (string.IsNullOrEmpty(key)) continue;
+            if (key == "browser-installation" && string.IsNullOrEmpty(data.GetString("selected_browser_package"))) continue;
+            string text, tooltip;
+            if (knownKeys.Contains(key))
+            {
+                if (key == "browser-installation")
+                {
+                    text = StepCatalog.BrowserStepText(data.GetString("selected_browser_name", "None"));
+                    tooltip = StepCatalog.BrowserTooltip(data.GetString("selected_browser_package"));
+                }
+                else
+                {
+                    text = StepCatalog.StepText(key);
+                    tooltip = StepCatalog.StepTooltip(key);
+                }
+            }
+            else
+            {
+                text = n.GetString("text");
+                tooltip = n.GetString("tooltip");
+            }
+            outList.Add(new VisibleItem(key, text, tooltip, n.GetBool("enabled")));
+        }
+        return outList;
+    }
+
     public static void SetBrowser(string packageId, string browserName)
     {
         var data = LoadInstallPlan();
@@ -493,4 +527,4 @@ public static class InstallPlan
     }
 }
 
-public record VisibleItem(string Key, string Text, string Tooltip);
+public record VisibleItem(string Key, string Text, string Tooltip, bool IsEnabled = false);

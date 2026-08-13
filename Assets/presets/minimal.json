@@ -54,6 +54,24 @@
       "text": "",
       "tooltip": "",
       "enabled": true
+    },
+    {
+      "key": "remove-onedrive",
+      "text": "",
+      "tooltip": "",
+      "enabled": true
+    },
+    {
+      "key": "remove-apps",
+      "text": "",
+      "tooltip": "",
+      "enabled": true
+    },
+    {
+      "key": "remove-gaming-apps",
+      "text": "",
+      "tooltip": "",
+      "enabled": true
     }
   ],
   "winutil_config": {
@@ -64,10 +82,8 @@
       "WPFTweaksTelemetry",
       "WPFTweaksWPBT",
       "WPFTweaksServices",
-      "WPFTweaksDisableExplorerAutoDiscovery",
       "WPFTweaksDisplay",
       "WPFTweaksRightClickMenu",
-      "WPFTweaksRevertStartMenu",
       "WPFTweaksRemoveOneDrive",
       "WPFTweaksWindowsAI",
       "WPFTweaksDisableStoreSearch",
@@ -76,5 +92,5 @@
       "WPFTweaksRestorePoint"
     ]
   },
-  "win11debloat_args": "-Silent -RemoveApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
 }
