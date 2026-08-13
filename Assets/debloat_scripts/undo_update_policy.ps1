@@ -67,7 +67,7 @@ else {
     $AUSubkey = Join-Path $RegPath "AU"
     if (Test-Path $AUSubkey) {
         $AuRemaining = Get-ItemProperty -Path $AUSubkey -ErrorAction SilentlyContinue
-        if ($AuRemaining -and $AuRemaining.PSObject.Properties.Count -eq 1) {
+        if ($null -eq $AuRemaining -or $AuRemaining.PSObject.Properties.Count -eq 1) {
             Remove-Item -Path $AUSubkey -Force -Recurse
             Write-Host "Removed empty AU subkey: $AUSubkey"
         }
@@ -78,10 +78,12 @@ else {
     }
 
     # If the key is now empty, remove it entirely
-    $remaining = Get-ItemProperty -Path $RegPath -ErrorAction SilentlyContinue
-    if ($remaining -and $remaining.PSObject.Properties.Count -eq 1) {
-        Remove-Item -Path $RegPath -Force -Recurse
-        Write-Host "Removed empty policy key: $RegPath"
+    if (Test-Path $RegPath) {
+        $remaining = Get-ItemProperty -Path $RegPath -ErrorAction SilentlyContinue
+        if ($null -eq $remaining -or $remaining.PSObject.Properties.Count -eq 1) {
+            Remove-Item -Path $RegPath -Force -Recurse
+            Write-Host "Removed empty policy key: $RegPath"
+        }
     }
 }
 
