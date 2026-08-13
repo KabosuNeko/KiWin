@@ -4,6 +4,10 @@
 # Removes the Windows Update policy set by update_policy_changer.ps1 /
 # update_policy_changer_pro.ps1 so the system receives full Windows updates again.
 #
+# Also removes the automatic renewal scheduled task and helper files created by
+# update_policy_changer.ps1 (DTLegit-style annual reapply), otherwise the policy
+# would be silently re-applied later.
+#
 # NOTE: This only removes the policy values that KiWin sets. Other policy values
 # under the same registry key (if any) are left untouched.
 
@@ -11,6 +15,21 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     [Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "Administrator rights required." -ForegroundColor Red
     exit 1
+}
+
+# Remove the automatic renewal scheduled tasks and helper files first
+$UpdateTasks = @("CheckSecuritySettings", "ReapplySecuritySettings")
+foreach ($TaskName in $UpdateTasks) {
+    if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
+        Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
+        Write-Host "Removed scheduled task: $TaskName"
+    }
+}
+
+$HelperFolder = "C:\ProgramData\UpdateWindowsUpdatePoliciesAnnually"
+if (Test-Path $HelperFolder) {
+    Remove-Item -Path $HelperFolder -Recurse -Force
+    Write-Host "Removed helper folder: $HelperFolder"
 }
 
 $RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
