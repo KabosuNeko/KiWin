@@ -13,8 +13,8 @@
     {"key": "debloat-windows-phase-one", "enabled": true},
     {"key": "debloat-windows-phase-two", "enabled": true},
     {"key": "configure-updates", "enabled": true},
-    {"key": "prevent-device-companion-apps", "enabled": true},
-    {"key": "wpbt", "enabled": true}
+    {"key": "prevent-device-companion-apps", "enabled": false},
+    {"key": "wpbt", "enabled": false}
   ],
   "winutil_config": {
     "WPFTweaks": [
@@ -22,7 +22,6 @@
       "WPFTweaksConsumerFeatures",
       "WPFTweaksDisableBGapps",
       "WPFTweaksTelemetry",
-      "WPFTweaksWPBT",
       "WPFTweaksWidget",
       "WPFTweaksServices",
       "WPFTweaksDisableExplorerAutoDiscovery",
@@ -39,5 +38,5 @@
       "WPFTweaksRazerBlock"
     ]
   },
-  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSnapLayouts -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSnapLayouts -DisableSearchHistory -DisableDeliveryOptimization -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
 }

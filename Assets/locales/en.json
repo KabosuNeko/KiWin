@@ -37,7 +37,9 @@
             "back": "Back",
             "advanced": "Advanced",
             "start_button": "START",
-            "custom_preset": "Custom"
+            "custom_preset": "Custom",
+            "optional_title": "Optional — you may not like these",
+            "optional_hint": "Turned off by default. Only enable if you know what they do."
         },
         "advanced": {
             "title": "Advanced settings",
