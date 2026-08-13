@@ -47,13 +47,13 @@
       "key": "prevent-device-companion-apps",
       "text": "",
       "tooltip": "",
-      "enabled": false
+      "enabled": true
     },
     {
       "key": "wpbt",
       "text": "",
       "tooltip": "",
-      "enabled": false
+      "enabled": true
     }
   ],
   "winutil_config": {
@@ -62,6 +62,7 @@
       "WPFTweaksConsumerFeatures",
       "WPFTweaksDisableBGapps",
       "WPFTweaksTelemetry",
+      "WPFTweaksWPBT",
       "WPFTweaksServices",
       "WPFTweaksDisableExplorerAutoDiscovery",
       "WPFTweaksDisplay",
@@ -75,5 +76,5 @@
       "WPFTweaksRestorePoint"
     ]
   },
-  "win11debloat_args": "-Silent -RemoveApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+  "win11debloat_args": "-Silent -RemoveApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
 }
