@@ -61,3 +61,6 @@ dotnet publish (Join-Path $ROOT "src\KiWin.App\KiWin.App.csproj") `
 Write-Host ""
 Write-Host "Build complete: $outDir\KiWin.exe"
 Write-Host "Assets (media, locales, presets, debloat_scripts, external_scripts) are copied next to KiWin.exe."
+
+Copy-Item (Join-Path $ROOT "Assets\media\ICON.ico") (Join-Path $outDir "media\ICON.ico") -Force
+Write-Host "ICON.ico re-copied to dist\media."

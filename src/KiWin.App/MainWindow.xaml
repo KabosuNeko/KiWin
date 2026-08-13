@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:KiWin.App.Views"
         Title="KiWin"
+        Icon="pack://siteoforigin:,,,/media/ICON.ico"
         Background="{StaticResource BgBrush}"
         Width="960" Height="640"
         MinWidth="820" MinHeight="560"
@@ -19,11 +20,8 @@
             <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
                     <Border Style="{StaticResource AppMark}" Width="28" Height="28">
-                        <Path Data="{StaticResource AppLogoIcon}" Width="16" Height="16"
-                              Stretch="Uniform" Stroke="{StaticResource OnAccentBrush}"
-                              StrokeThickness="1.7" StrokeStartLineCap="Round"
-                              StrokeEndLineCap="Round" StrokeLineJoin="Round"
-                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Image Source="pack://siteoforigin:,,,/media/ICON.ico" Width="20" Height="20"
+                               Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <TextBlock Text="KiWin" FontSize="15" FontWeight="SemiBold" Margin="10,0,0,0"
                                VerticalAlignment="Center" />
