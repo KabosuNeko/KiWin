@@ -31,7 +31,8 @@ public static class StepCatalog
 
     public const string StandardPresetKey = "standard";
 
-    public static bool DefaultBoolOptionEnabled(string slug) => false;
+    public static bool DefaultBoolOptionEnabled(string slug) =>
+        slug is "prevent-device-companion-apps" or "wpbt";
 
     public static readonly Dictionary<string, StepPresentation> StepPresentation = new()
     {
@@ -52,6 +53,7 @@ public static class StepCatalog
             "WPFTweaksConsumerFeatures",
             "WPFTweaksDisableBGapps",
             "WPFTweaksTelemetry",
+            "WPFTweaksWPBT",
             "WPFTweaksWidget",
             "WPFTweaksServices",
             "WPFTweaksDisableExplorerAutoDiscovery",
@@ -78,7 +80,7 @@ public static class StepCatalog
         "-DisableNotepadAI", "-DisableEdgeAI", "-DisableStickyKeys", "-DisableEdgeAds",
         "-DisableBraveBloat", "-DisableRecall", "-DisableAISvcAutoStart", "-DisableClickToDo",
         "-DisableSnapLayouts", "-DisableSearchHistory", "-DisableDeliveryOptimization",
-        "-DisableSearchHighlights", "-DisableStoreSearchSuggestions",
+        "-DisableDeviceAutoAppDownload", "-DisableSearchHighlights", "-DisableStoreSearchSuggestions",
         "-DisableLocationServices", "-DisableFindMyDevice", "-PreventUpdateAutoReboot",
         "-DisableStartPhoneLink", "-DisableModernStandbyNetworking",
     };

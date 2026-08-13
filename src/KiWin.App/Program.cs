@@ -306,7 +306,7 @@ public static class Program
         ApplyWinUtilToggles(plan, winutil);
         AddOutlookRemoval(winutil);
         var rawArgs = plan.GetString("win11debloat_args");
-        var win11Args = ApplyWin11DebloatToggles(plan, rawArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList());
+        var win11Args = rawArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var payload = new JsonObject
         {
             ["WinUtil"] = winutil,
@@ -318,16 +318,6 @@ public static class Program
         var tmpPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"kiwin_install_plan_runtime_{Guid.NewGuid():N}.json");
         File.WriteAllText(tmpPath, payload.ToJsonString(new JsonSerializerOptions { WriteIndented = true }), Encoding.UTF8);
         return (tmpPath, true);
-    }
-
-    private static List<string> ApplyWin11DebloatToggles(JsonObject plan, List<string> args)
-    {
-        const string flag = "-DisableDeviceAutoAppDownload";
-        bool on = InstallPlan.IsItemEnabled(plan, "prevent-device-companion-apps");
-        var has = args.Contains(flag);
-        if (on && !has) args.Add(flag);
-        else if (!on && has) args.RemoveAll(a => a == flag);
-        return args;
     }
 
     private static void ApplyWinUtilToggles(JsonObject plan, JsonNode winutil)
