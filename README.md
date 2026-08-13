@@ -30,8 +30,9 @@ KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks â€
 - **Administrator** rights (UAC prompt on launch)
 - Internet connection (browser install, script downloads)
 
-## Quick install (one-liner)
+## Quick start
 
+Open Terminal (Admin) by pressing Win + X, then paste and run the command below:
 ```powershell
 irm https://raw.githubusercontent.com/KabosuNeko/KiWin/main/kiwin-install.ps1 | iex
 ```
