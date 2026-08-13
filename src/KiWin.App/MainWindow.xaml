@@ -19,9 +19,11 @@
             <DockPanel LastChildFill="False">
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
                     <Border Style="{StaticResource AppMark}" Width="28" Height="28">
-                        <TextBlock Text="K" FontSize="15" FontWeight="Bold"
-                                   Foreground="{StaticResource OnAccentBrush}"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Path Data="{StaticResource AppLogoIcon}" Width="16" Height="16"
+                              Stretch="Uniform" Stroke="{StaticResource OnAccentBrush}"
+                              StrokeThickness="1.7" StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <TextBlock Text="KiWin" FontSize="15" FontWeight="SemiBold" Margin="10,0,0,0"
                                VerticalAlignment="Center" />

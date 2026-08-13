@@ -23,9 +23,11 @@
             <StackPanel>
                 <Border Style="{StaticResource AppMark}" Width="56" Height="56" CornerRadius="14"
                         HorizontalAlignment="Center">
-                    <TextBlock Text="K" FontSize="28" FontWeight="Bold"
-                               Foreground="{StaticResource OnAccentBrush}"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Path Data="{StaticResource AppLogoIcon}" Width="30" Height="30"
+                          Stretch="Uniform" Stroke="{StaticResource OnAccentBrush}"
+                          StrokeThickness="1.9" StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                          HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
                 <TextBlock x:Name="TitleText" FontSize="30" FontWeight="SemiBold"
                            HorizontalAlignment="Center" Margin="0,22,0,8" />
