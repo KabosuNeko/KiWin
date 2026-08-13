@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build solution
+        run: dotnet build KiWin.slnx -c Release
+
+      - name: Build release bundle
+        shell: pwsh
+        run: ./build.ps1
+
+      - name: Smoke test (dry-run headless)
+        shell: pwsh
+        run: ./dist/KiWin.exe headless=true dry-run=true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KiWin
+          path: dist/
+          if-no-files-found: error

@@ -1,0 +1,53 @@
+<UserControl x:Class="KiWin.App.Views.AdvancedPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <TextBlock x:Name="TitleText" Style="{StaticResource PageTitle}" />
+                <TextBlock x:Name="WarningText" TextWrapping="Wrap" Margin="0,0,0,14"
+                           Foreground="#F9E2AF" />
+                <TextBlock x:Name="StepsLabel" Style="{StaticResource SectionTitle}" />
+                <ItemsControl x:Name="StepsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox x:Name="StepCheck" Margin="0,0,0,8" FontSize="13"
+                                      IsChecked="{Binding IsEnabled}" Content="{Binding Text}"
+                                      ToolTip="{Binding Tooltip}" Checked="StepCheck_Changed"
+                                      Unchecked="StepCheck_Changed" Tag="{Binding Key}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button x:Name="BackButton" Style="{StaticResource GhostButton}" Margin="0,18,0,0"
+                        HorizontalAlignment="Left" Click="BackButton_Click" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Column="2">
+            <TextBlock x:Name="Win11Label" Style="{StaticResource SectionTitle}" />
+            <TextBox x:Name="Win11ArgsBox" Height="110" AcceptsReturn="True"
+                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Hidden" />
+            <Button x:Name="SaveWin11Button" Margin="0,8,0,18" Click="SaveWin11_Click" />
+
+            <TextBlock x:Name="WinUtilLabel" Style="{StaticResource SectionTitle}" />
+            <TextBox x:Name="WinUtilBox" Height="110" AcceptsReturn="True"
+                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Hidden"
+                     ToolTip="{Binding WinUtilTooltip}" />
+            <Button x:Name="SaveWinUtilButton" Margin="0,8,0,18" Click="SaveWinUtil_Click" />
+
+            <Button x:Name="ImportPlanButton" Margin="0,0,0,8" Click="ImportPlan_Click" />
+            <Button x:Name="ImportWinutilButton" Margin="0,0,0,8" Click="ImportWinutil_Click" />
+            <Button x:Name="ExportPlanButton" Margin="0,0,0,18" Click="ExportPlan_Click" />
+            <Button x:Name="UndoPolicyButton" Margin="0,0,0,8" Click="UndoPolicy_Click" />
+        </StackPanel>
+    </Grid>
+</UserControl>

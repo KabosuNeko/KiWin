@@ -1,0 +1,43 @@
+{
+  "preset_key": "standard",
+  "preset_name": "Standard",
+  "version": 1,
+  "selected_preset_key": "standard",
+  "selected_browser_name": "None",
+  "selected_browser_package": "",
+  "include_browser_install": false,
+  "items": [
+    {"key": "developer-mode", "enabled": false},
+    {"key": "remove-edge-permanently", "enabled": true},
+    {"key": "browser-installation", "enabled": true},
+    {"key": "debloat-windows-phase-one", "enabled": true},
+    {"key": "debloat-windows-phase-two", "enabled": true},
+    {"key": "configure-updates", "enabled": true},
+    {"key": "prevent-device-companion-apps", "enabled": true},
+    {"key": "wpbt", "enabled": true}
+  ],
+  "winutil_config": {
+    "WPFTweaks": [
+      "WPFTweaksActivity",
+      "WPFTweaksConsumerFeatures",
+      "WPFTweaksDisableBGapps",
+      "WPFTweaksTelemetry",
+      "WPFTweaksWPBT",
+      "WPFTweaksWidget",
+      "WPFTweaksServices",
+      "WPFTweaksDisableExplorerAutoDiscovery",
+      "WPFTweaksDisplay",
+      "WPFTweaksRightClickMenu",
+      "WPFTweaksRevertStartMenu",
+      "WPFTweaksRemoveOneDrive",
+      "WPFTweaksRemoveHomeAndGallery",
+      "WPFTweaksWindowsAI",
+      "WPFTweaksDisableStoreSearch",
+      "WPFTweaksLocation",
+      "WPFTweaksReservedStorage",
+      "WPFTweaksRestorePoint",
+      "WPFTweaksRazerBlock"
+    ]
+  },
+  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -TaskbarAlignLeft -HideSearchTb -DisableWidgets -DisableCopilot -ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableMouseAcceleration -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSnapLayouts -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+}

@@ -1,0 +1,154 @@
+{
+    "meta": {
+        "code": "vi",
+        "native_name": "Tiếng Việt",
+        "english_name": "Vietnamese",
+        "direction": "ltr"
+    },
+    "app": {
+        "install_overlay": {
+            "title": "KiWin đang cài đặt",
+            "guidance": "Vui lòng không sử dụng bàn phím hoặc chuột. Bạn có thể quan sát KiWin làm việc.",
+            "remove_edge": "Đang gỡ Microsoft Edge vĩnh viễn...",
+            "browser_installation": "Đang cài trình duyệt bạn đã chọn...",
+            "debloat_windows_phase_one": "Đang dọn Windows giai đoạn một (WinUtil)...",
+            "debloat_windows_phase_two": "Đang dọn Windows giai đoạn hai (Win11Debloat)...",
+            "configure_updates": "Đang cấu hình chính sách Windows Update...",
+            "dry_run_complete": "Hoàn tất chạy thử. Không có thay đổi nào được thực hiện.",
+            "complete_no_restart": "Cài đặt hoàn tất. KiWin sẽ không tự khởi động lại hệ thống."
+        }
+    },
+    "configuration": {
+        "browser": {
+            "title": "Chào mừng. Vui lòng chọn trình duyệt web của bạn.",
+            "skip": "Không cài trình duyệt"
+        },
+        "review": {
+            "title": "Hệ thống sẵn sàng để dọn. Vui lòng kiểm tra lại.",
+            "empty": "Không có mục nào.",
+            "guidance": "Danh sách bên trái hiển thị mọi thứ KiWin sẽ thực hiện trên hệ thống của bạn. Nếu có gì đó bạn không muốn, bạn có thể xóa các mục khỏi danh sách.\n\nNếu mọi thứ đều ổn, hãy chọn \"Bắt đầu\".",
+            "no_browser_warning": "Sẽ không cài trình duyệt nào.",
+            "no_internet_info": "Bạn không kết nối internet. KiWin sẽ không cài trình duyệt.",
+            "no_updates_warning": "Chính sách cập nhật sẽ không được cấu hình. Các bản cập nhật có thể khôi phục bloat và hoàn tác một số cài đặt của KiWin.",
+            "nothing_to_do": "Không thể bắt đầu quá trình dọn. Không có gì để thực hiện.",
+            "reset_defaults": "Khôi phục mặc định",
+            "back": "Quay lại",
+            "advanced": "Nâng cao",
+            "start_button": "BẮT ĐẦU",
+            "custom_preset": "Tùy chỉnh"
+        },
+        "advanced": {
+            "title": "Cài đặt nâng cao",
+            "warning": "Đừng chạm vào trừ khi bạn biết mình đang làm gì!",
+            "import_plan": "Nhập Kế hoạch cài đặt KiWin",
+            "import_winutil": "Nhập Cấu hình WinUtil",
+            "set_win11_args": "Đặt Tham số Win11Debloat",
+            "export_plan": "Xuất dưới dạng Kế hoạch cài đặt",
+            "steps": "Các bước",
+            "language": "Ngôn ngữ",
+            "winutil_tweaks": "Tinh chỉnh WinUtil",
+            "winutil_tweaks_tooltip": "Mỗi dòng một tên tinh chỉnh, vd: WPFTweaksTelemetry. Được WinUtil áp dụng trong giai đoạn một.",
+            "undo_update_policy": "Khôi phục toàn bộ Windows Update",
+            "undo_policy_done": "Đã gỡ chính sách cập nhật. Windows sẽ nhận đầy đủ bản cập nhật trở lại."
+        },
+        "dialogs": {
+            "cancel": "Hủy",
+            "save_changes": "Lưu thay đổi",
+            "win11_args_title": "Đặt Tham số Win11Debloat",
+            "import_plan_title": "Nhập Kế hoạch cài đặt KiWin",
+            "import_winutil_title": "Nhập Cấu hình WinUtil",
+            "export_plan_title": "Xuất dưới dạng Kế hoạch cài đặt",
+            "json_files_filter": "Tệp JSON (*.json);;Tất cả tệp (*)"
+        }
+    },
+    "steps": {
+        "remove_edge_permanently": {
+            "text": "Gỡ Microsoft Edge vĩnh viễn",
+            "tooltip": "Gỡ cài đặt Microsoft Edge và đảm bảo nó không quay lại. Bạn luôn có thể tự cài lại nếu muốn. Các ứng dụng phụ thuộc vào nó (msedgewebview2) vẫn hoạt động."
+        },
+        "browser_installation": {
+            "text": "Cài trình duyệt web",
+            "text_with_browser": "Cài trình duyệt web: {browser_name}",
+            "tooltip": "Chưa chọn trình duyệt nào."
+        },
+        "debloat_windows_phase_one": {
+            "text": "Dọn Windows giai đoạn một (WinUtil)",
+            "tooltip": "KiWin sử dụng công cụ phổ biến và uy tín, WinUtil của ChrisTitusTech, như một phần của quá trình dọn. Toàn bộ quá trình được tự động hóa, bạn không cần làm gì. Không nên gỡ bỏ bước này."
+        },
+        "debloat_windows_phase_two": {
+            "text": "Dọn Windows giai đoạn hai (Win11Debloat)",
+            "tooltip": "KiWin sử dụng công cụ phổ biến và uy tín, Win11Debloat của Raphire, như một phần của quá trình dọn. Toàn bộ quá trình được tự động hóa, bạn không cần làm gì. Không nên gỡ bỏ bước này."
+        },
+        "configure_updates": {
+            "text": "Đặt chính sách chỉ cập nhật bảo mật",
+            "tooltip": "Để ngăn Windows Update tái lập bloat và hoàn tác các thay đổi, KiWin đặt chính sách cập nhật trên hệ thống của bạn để chỉ nhận các bản cập nhật bảo mật, bỏ qua các bản cập nhật \"tính năng\" không phải bảo mật. Hiệu lực vĩnh viễn trên Windows Pro, nhưng chỉ 365 ngày trên Windows Home."
+        },
+        "developer_mode": {
+            "text": "Chế độ nhà phát triển (ẩn lớp phủ cài đặt)",
+            "tooltip": "Khi bật, KiWin chạy mà không hiện lớp phủ cài đặt toàn màn hình."
+        },
+        "prevent_device_companion_apps": {
+            "text": "Chặn ứng dụng đi kèm thiết bị",
+            "tooltip": "Ngăn phần mềm bổ sung được cài đặt khi cắm thiết bị (ví dụ quảng cáo khi cắm màn hình). Có rủi ro bảo mật tiềm ẩn."
+        },
+        "wpbt": {
+            "text": "Chặn WPBT (Windows Platform Binary Table)",
+            "tooltip": "Ngăn mã firmware WPBT (cơ chế cấp thấp của OEM) chạy khi khởi động. Một số OEM dùng nó cho mục đích hợp pháp, nhưng nó cũng có thể bị lạm dụng."
+        }
+    },
+    "browsers": {
+        "helium": {
+            "tooltip": "Helium là trình duyệt nhẹ, nhanh và hiện đại, tập trung vào hiệu năng và đơn giản."
+        },
+        "firefox": {
+            "tooltip": "Firefox không được khuyến nghị trừ khi cần thiết cho mục đích của bạn, vì nó bao gồm telemetry và nội dung tài trợ theo mặc định."
+        },
+        "waterfox": {
+            "tooltip": "Waterfox được khuyến nghị hơn Firefox, nhưng không bằng Brave. Nó dựa trên Firefox nhưng loại bỏ theo dõi và telemetry."
+        },
+        "brave": {
+            "tooltip": "Brave là trình duyệt được khuyến nghị, vì nó gần nhất với Chrome trong khi tôn trọng quyền riêng tư của bạn."
+        },
+        "librewolf": {
+            "tooltip": "LibreWolf chỉ được khuyến nghị cho người dùng am hiểu công nghệ. Nó được thiết kế cho quyền riêng tư và bảo mật tối đa, nhưng có thể khó sử dụng hơn."
+        }
+    },
+    "errors": {
+        "dialog_title": "Lỗi",
+        "stop_installation": "Dừng cài đặt",
+        "continue_anyways": "Tiếp tục dù vậy",
+        "developer_console_failed": "Không thể mở cửa sổ console Chế độ Nhà phát triển.\n{error}",
+        "config_not_found": "Không tìm thấy tệp cấu hình: {path}",
+        "empty_execution_plan": "Kế hoạch cài đặt không có bước thực thi nào. Mở giao diện KiWin và cấu hình ít nhất một bước.",
+        "installation_unexpected": "Đã xảy ra lỗi không mong muốn trong quá trình cài đặt.\nKiểm tra log để biết chi tiết.",
+        "completion_marker_failed": "Không thể ghi dấu hoàn thành KiWin.\n{error}",
+        "import_plan_failed": "Không thể nhập kế hoạch cài đặt:\n{error}",
+        "import_winutil_failed": "Không thể nhập cấu hình WinUtil:\n{error}",
+        "winutil_config_invalid": "Cấu hình WinUtil phải là một đối tượng hoặc mảng JSON.",
+        "export_plan_failed": "Không thể xuất kế hoạch cài đặt:\n{error}",
+        "save_win11_args_failed": "Không thể lưu tham số Win11Debloat:\n{error}",
+        "save_winutil_failed": "Không thể lưu tinh chỉnh WinUtil:\n{error}",
+        "undo_policy_failed": "Không thể gỡ chính sách cập nhật:\n{error}",
+        "windows_version_failed": "Không thể xác định phiên bản Windows.\nCông cụ này yêu cầu Windows 11.",
+        "incompatible_windows_version": "Phát hiện phiên bản Windows không tương thích:\n    {product_name} (build {build_num})\nCông cụ này yêu cầu Windows 11.",
+        "temp_unwritable": "KiWin không thể ghi tệp vào {kiwin_dir}.\nVui lòng giải phóng dung lượng ổ đĩa hoặc kiểm tra quyền.",
+        "admin_elevation_failed": "Không thể nâng quyền Quản trị viên:\n{error}",
+        "powershell_script_launch_failed": "Lỗi khởi chạy tập lệnh PowerShell:\n{error}",
+        "powershell_script_failed": "Tập lệnh PowerShell '{script_name}' thất bại (mã thoát {exit_code})",
+        "powershell_command_failed": "Lệnh PowerShell thất bại (mã thoát {exit_code})",
+        "winget_install_failed": "Không thể cài đặt hoặc xác minh winget:\n{error}",
+        "winget_browser_failed": "Đã xảy ra sự cố khi cài đặt. '{display_name}' không thể được cài đặt thành công.\nMã thoát winget: {exit_code}",
+        "winget_browser_error": "Đã xảy ra sự cố khi cài đặt. '{display_name}' không thể được cài đặt thành công.\nLỗi: {error}",
+        "browser_metadata_missing": "Không có gói trình duyệt nào được cung cấp bởi metadata trình chạy.",
+        "windows_edition_failed": "Không thể xác định phiên bản Windows:\n{error}",
+        "powershell_named_script_failed": "Không thể thực thi tập lệnh PowerShell:\n{script_name}\n\n{error}",
+        "downloaded_config_invalid": "Cấu hình đã tải không phải JSON hợp lệ: {error}",
+        "config_load_failed": "Không thể tải cấu hình {label}.\n{error}",
+        "config_download_failed": "Không thể tải cấu hình từ URL.\n{error}",
+        "config_missing": "Không tìm thấy cấu hình:\n{path}",
+        "bundled_winutil_missing": "Không tìm thấy tập lệnh WinUtil được đóng gói:\n{path}",
+        "winutil_failed": "Không thể thực thi ChrisTitusTech WinUtil:\n{error}",
+        "bundled_win11debloat_missing": "Không tìm thấy tập lệnh Win11Debloat được đóng gói:\n{path}",
+        "win11debloat_failed": "Không thể thực thi Raphire Win11Debloat:\n{error}"
+    }
+}

@@ -1,0 +1,22 @@
+# .NET build output
+bin/
+obj/
+
+# Publish output
+dist/
+
+# Visual Studio / Rider
+.vs/
+*.user
+*.suo
+.idea/
+
+# External debloat scripts downloaded by build.ps1
+external_scripts/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

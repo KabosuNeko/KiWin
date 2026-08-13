@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KiWin.App/KiWin.App.csproj" />
+    <Project Path="src/KiWin.Core/KiWin.Core.csproj" />
+    <Project Path="src/KiWin.Debloat/KiWin.Debloat.csproj" />
+    <Project Path="src/KiWin.Utilities/KiWin.Utilities.csproj" />
+  </Folder>
+</Solution>
