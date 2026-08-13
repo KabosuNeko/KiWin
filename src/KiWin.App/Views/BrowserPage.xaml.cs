@@ -19,6 +19,7 @@ public partial class BrowserPage : UserControl
     public void Refresh()
     {
         TitleText.Text = Localization.T("configuration.browser.title");
+        SubtitleText.Text = Localization.T("configuration.browser.subtitle");
         SkipButton.Content = Localization.T("configuration.browser.skip");
         var list = new List<BrowserItem>();
         foreach (var b in StepCatalog.BrowserOptionsLocalized())
