@@ -64,3 +64,10 @@ Write-Host "Assets (media, locales, presets, debloat_scripts, external_scripts) 
 
 Copy-Item (Join-Path $ROOT "Assets\media\ICON.ico") (Join-Path $outDir "media\ICON.ico") -Force
 Write-Host "ICON.ico re-copied to dist\media."
+
+Write-Host ""
+Write-Host "Packaging release bundle..."
+$zipPath = Join-Path $ROOT "KiWin.zip"
+if (Test-Path $zipPath) { Remove-Item -Force $zipPath }
+Compress-Archive -Path (Join-Path $outDir "*") -DestinationPath $zipPath -CompressionLevel Optimal -Force
+Write-Host "Release bundle: $zipPath"

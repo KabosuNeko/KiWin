@@ -34,6 +34,15 @@ KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks â€
 
 Run `KiWin.exe` (in `dist\`) as administrator. The `media/`, `locales/`, `presets/`, `debloat_scripts/`, `external_scripts/` folders must sit next to the executable.
 
+## Quick install (one-liner)
+
+```powershell
+irm https://raw.githubusercontent.com/KabosuNeko/KiWin/main/kiwin-install.ps1 | iex
+```
+
+Downloads the latest release bundle `KiWin.zip` from GitHub Releases, extracts it to `%LOCALAPPDATA%\KiWin` and launches the app (UAC prompt on start).
+To publish a new release, push a tag matching `v*` (e.g. `git tag v1.0.0 && git push origin v1.0.0`) - CI builds, packages `KiWin.zip` and uploads it as a GitHub Release asset.
+
 ## Build from source
 
 Requires [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
