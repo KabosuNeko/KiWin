@@ -1,0 +1,154 @@
+{
+    "meta": {
+        "code": "en",
+        "native_name": "English",
+        "english_name": "English",
+        "direction": "ltr"
+    },
+    "app": {
+        "install_overlay": {
+            "title": "KiWin is installing",
+            "guidance": "Please don't use your keyboard or mouse. You can watch as KiWin works.",
+            "remove_edge": "Removing Microsoft Edge permanently...",
+            "browser_installation": "Installing your chosen browser...",
+            "debloat_windows_phase_one": "Debloating Windows phase one (WinUtil)...",
+            "debloat_windows_phase_two": "Debloating Windows phase two (Win11Debloat)...",
+            "configure_updates": "Configuring Windows Update policies...",
+            "dry_run_complete": "Dry run complete. No system changes were made.",
+            "complete_no_restart": "Installation complete. KiWin will not restart your system automatically."
+        }
+    },
+    "configuration": {
+        "browser": {
+            "title": "Welcome. Please select your web browser.",
+            "skip": "Do not install a browser"
+        },
+        "review": {
+            "title": "System is ready to debloat. Please review.",
+            "empty": "No items.",
+            "guidance": "The list on the left shows everything KiWin is going to do to your system. If there's something you don't want it to do, you can remove items from the list.\n\nIf everything looks good to you, select \"Start.\"",
+            "no_browser_warning": "No browser will be installed.",
+            "no_internet_info": "You aren't connected to internet. KiWin won't install a browser.",
+            "no_updates_warning": "Update policy won't be configured. Updates may restore bloat and undo some of KiWin's settings.",
+            "nothing_to_do": "Cannot start debloat process. Nothing to do.",
+            "reset_defaults": "Reset to Defaults",
+            "back": "Back",
+            "advanced": "Advanced",
+            "start_button": "START",
+            "custom_preset": "Custom"
+        },
+        "advanced": {
+            "title": "Advanced settings",
+            "warning": "Do not touch unless you know what you're doing!",
+            "import_plan": "Import KiWin Install Plan",
+            "import_winutil": "Import WinUtil Config",
+            "set_win11_args": "Set Win11Debloat Arguments",
+            "export_plan": "Export As Install Plan",
+            "steps": "Steps",
+            "language": "Language",
+            "winutil_tweaks": "WinUtil Tweaks",
+            "winutil_tweaks_tooltip": "One tweak name per line, e.g. WPFTweaksTelemetry. Applied by WinUtil during phase one.",
+            "undo_update_policy": "Restore Full Windows Updates",
+            "undo_policy_done": "Update policy removed. Windows will now receive full updates again."
+        },
+        "dialogs": {
+            "cancel": "Cancel",
+            "save_changes": "Save Changes",
+            "win11_args_title": "Set Win11Debloat Arguments",
+            "import_plan_title": "Import KiWin Install Plan",
+            "import_winutil_title": "Import WinUtil Config",
+            "export_plan_title": "Export As Install Plan",
+            "json_files_filter": "JSON Files (*.json);;All Files (*)"
+        }
+    },
+    "steps": {
+        "remove_edge_permanently": {
+            "text": "Remove Microsoft Edge permanently",
+            "tooltip": "Uninstalls Microsoft Edge, and ensures it doesn't come back. You can always reinstall it yourself if you want. Apps that rely on it (msedgewebview2) will still work."
+        },
+        "browser_installation": {
+            "text": "Install web browser",
+            "text_with_browser": "Install web browser: {browser_name}",
+            "tooltip": "No browser selected yet."
+        },
+        "debloat_windows_phase_one": {
+            "text": "Debloat Windows phase one (WinUtil)",
+            "tooltip": "KiWin uses a popular and well-established tool, WinUtil by ChrisTitusTech, as part of its debloating process. The whole process is automated, so you don't need to do anything. It is not recommended to remove this step."
+        },
+        "debloat_windows_phase_two": {
+            "text": "Debloat Windows phase two (Win11Debloat)",
+            "tooltip": "KiWin uses a popular and well-established tool, Win11Debloat by Raphire, as part of its debloating process. The whole process is automated, so you don't need to do anything. It is not recommended to remove this step."
+        },
+        "configure_updates": {
+            "text": "Set security-only update policy",
+            "tooltip": "In order to prevent Windows updates from reintroducing bloat and undoing the changes made, KiWin sets an update policy on your system which results in only receiving security updates, leaving out non-security \"feature\" updates. It lasts permanently on Windows Pro, but only 365 days on Windows Home."
+        },
+        "developer_mode": {
+            "text": "Developer mode (hide installation overlay)",
+            "tooltip": "When enabled, KiWin runs without showing the full-screen install overlay."
+        },
+        "prevent_device_companion_apps": {
+            "text": "Prevent device companion apps",
+            "tooltip": "Prevents additional software from being installed when plugging in devices (e.g. ads when plugging in a monitor). Poses potential security risk."
+        },
+        "wpbt": {
+            "text": "Block WPBT (Windows Platform Binary Table)",
+            "tooltip": "Prevents the WPBT firmware binary (a lower-level OEM mechanism) from running at boot. Some OEMs use it for legitimate purposes, but it can also be abused."
+        }
+    },
+    "browsers": {
+        "helium": {
+            "tooltip": "Helium is a lightweight, fast and modern browser focused on performance and simplicity."
+        },
+        "firefox": {
+            "tooltip": "Firefox is not recommended unless necessary for your purposes, as it includes telemetry and sponsored content by default."
+        },
+        "waterfox": {
+            "tooltip": "Waterfox is recommended over Firefox, but not Brave. It's based on Firefox, but removes tracking and telemetry."
+        },
+        "brave": {
+            "tooltip": "Brave is the recommended browser, as it is the closest to Chrome while respecting your privacy."
+        },
+        "librewolf": {
+            "tooltip": "LibreWolf is only recommended for tech-savvy users. It is designed for maximum privacy and security, but can be harder to use."
+        }
+    },
+    "errors": {
+        "dialog_title": "Error",
+        "stop_installation": "Stop Installation",
+        "continue_anyways": "Continue Anyways",
+        "developer_console_failed": "Failed to launch Developer Mode console window.\n{error}",
+        "config_not_found": "Config file not found: {path}",
+        "empty_execution_plan": "Install plan has no executable steps. Open KiWin UI and configure at least one step.",
+        "installation_unexpected": "An unexpected error occurred during installation.\nCheck the log for details.",
+        "completion_marker_failed": "Failed to record KiWin completion marker.\n{error}",
+        "import_plan_failed": "Failed to import install plan:\n{error}",
+        "import_winutil_failed": "Failed to import WinUtil config:\n{error}",
+        "winutil_config_invalid": "WinUtil config must be a JSON object or array.",
+        "export_plan_failed": "Failed to export install plan:\n{error}",
+        "save_win11_args_failed": "Failed to save Win11Debloat arguments:\n{error}",
+        "save_winutil_failed": "Failed to save WinUtil tweaks:\n{error}",
+        "undo_policy_failed": "Failed to remove update policy:\n{error}",
+        "windows_version_failed": "Failed to determine Windows version.\nThis tool requires Windows 11.",
+        "incompatible_windows_version": "Incompatible Windows version detected:\n    {product_name} (build {build_num})\nThis tool requires Windows 11.",
+        "temp_unwritable": "KiWin could not write files to {kiwin_dir}.\nPlease free up disk space or check permissions.",
+        "admin_elevation_failed": "Unable to elevate to Administrator:\n{error}",
+        "powershell_script_launch_failed": "Error launching PowerShell script:\n{error}",
+        "powershell_script_failed": "PowerShell script '{script_name}' failed (exit code {exit_code})",
+        "powershell_command_failed": "PowerShell command failed (exit code {exit_code})",
+        "winget_install_failed": "Failed to install or verify winget:\n{error}",
+        "winget_browser_failed": "A problem occurred while installing. '{display_name}' could not be installed successfully.\nwinget exit code: {exit_code}",
+        "winget_browser_error": "A problem occurred while installing. '{display_name}' could not be installed successfully.\nError: {error}",
+        "browser_metadata_missing": "No browser package was provided by the runner metadata.",
+        "windows_edition_failed": "Failed to determine Windows edition:\n{error}",
+        "powershell_named_script_failed": "Failed to execute PowerShell script:\n{script_name}\n\n{error}",
+        "downloaded_config_invalid": "Downloaded config is not valid JSON: {error}",
+        "config_load_failed": "Failed to load {label} config.\n{error}",
+        "config_download_failed": "Failed to download config from URL.\n{error}",
+        "config_missing": "Config not found:\n{path}",
+        "bundled_winutil_missing": "Bundled WinUtil script not found:\n{path}",
+        "winutil_failed": "Failed to execute ChrisTitusTech WinUtil:\n{error}",
+        "bundled_win11debloat_missing": "Bundled Win11Debloat script not found:\n{path}",
+        "win11debloat_failed": "Failed to execute Raphire Win11Debloat:\n{error}"
+    }
+}

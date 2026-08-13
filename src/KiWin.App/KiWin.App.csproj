@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>KiWin</AssemblyName>
+    <RootNamespace>KiWin.App</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>KiWin.App.Program</StartupObject>
+    <Version>1.0.0.0</Version>
+    <Product>KiWin</Product>
+    <Company>KiWin</Company>
+    <Description>Simple utility to debloat Windows in 2 clicks.</Description>
+    <ApplicationIcon>..\..\Assets\media\ICON.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KiWin.Core\KiWin.Core.csproj" />
+    <ProjectReference Include="..\KiWin.Utilities\KiWin.Utilities.csproj" />
+    <ProjectReference Include="..\KiWin.Debloat\KiWin.Debloat.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Assets\**\*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\external_scripts\**\*" Link="external_scripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
