@@ -1,8 +1,14 @@
 # KiWin
 
-A **Windows 11 debloat tool** that gets the job done in a few clicks — C#/WPF, **Catppuccin Mocha** dark theme, English + Vietnamese.
+<p><br/></p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/05152cb8-bf18-49fd-a76f-2a236ffe43e7" alt="KiWin Logo" style="width: 192px" />
+</p>
+<p><br/></p>
 
-KiWin is the "shell": a GUI + install plan + config generation layer that drives well-known debloat tools and its own scripts. **Debloat only — no visual/theme changes to Windows.**
+**Windows without the suck.**
+
+KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks — written in C#/WPF. Acting as a central management shell, it combines a clean GUI, installation planner, and config generator to run trusted debloat tools alongside its own custom scripts. **Pure Debloat: Focused solely on system optimization and bloatware removal—zero visual or theme modifications to Windows.**
 
 ## Features
 
@@ -61,28 +67,12 @@ KiWin.exe undo-update-policy=true
 | `undo-update-policy` | bool | Remove the security-only update policy (restore full Windows updates) |
 | `skip-<step>-step` | bool | Skip a step (e.g. `skip-configure-updates-step`) |
 
-## Project structure
 
-```
-KiWin.slnx
-├── src/
-│   ├── KiWin.App/        # WPF GUI (pages) + entry + CLI
-│   ├── KiWin.Core/       # InstallPlan, StepCatalog, Localization
-│   ├── KiWin.Debloat/    # Debloat steps
-│   └── KiWin.Utilities/  # PowerShell handler, logger, preflight...
-├── Assets/
-│   ├── locales/         # en.json, vi.json
-│   ├── presets/         # standard.json, debloat-lite.json
-│   ├── media/           # browser icons, app icon
-│   └── debloat_scripts/ # KiWin's own scripts (edge_vanisher, update policy...)
-├── external_scripts/    # winutil.ps1 + Win11Debloat (downloaded at build)
-└── build.ps1
-```
-
-## Third-party tools
+## Third-party tools credits
 
 - [WinUtil](https://github.com/ChrisTitusTech/winutil) — Chris Titus Tech
 - [Win11Debloat](https://github.com/Raphire/Win11Debloat) — Raphire
+- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler) - DTLegit
 
 ## Disclaimer
 
