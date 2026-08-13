@@ -59,30 +59,60 @@
             </ComboBox>
         </StackPanel>
 
-        <ListBox x:Name="ItemsList" Grid.Row="2"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
-                            <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="14"
-                                       FontWeight="SemiBold" />
-                            <TextBlock Text="{Binding Tooltip}" TextWrapping="Wrap" FontSize="12"
-                                       Foreground="{StaticResource SecondaryTextBrush}" Margin="0,4,0,0" />
-                        </StackPanel>
-                        <Button Grid.Column="1" Style="{StaticResource IconButton}" Width="32" Height="32"
-                                Content="✕" FontSize="13" VerticalAlignment="Center"
-                                Click="RemoveItem_Click" Tag="{Binding Key}"
-                                ToolTip="Remove" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListBox x:Name="ItemsList"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,12,0">
+                                <TextBlock Text="{Binding Text}" TextWrapping="Wrap" FontSize="14"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Tooltip}" TextWrapping="Wrap" FontSize="12"
+                                           Foreground="{StaticResource SecondaryTextBrush}" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource IconButton}" Width="32" Height="32"
+                                    Content="✕" FontSize="13" VerticalAlignment="Center"
+                                    Click="RemoveItem_Click" Tag="{Binding Key}"
+                                    ToolTip="Remove" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                    CornerRadius="12" Padding="14,12" Margin="0,14,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="ExtraTitle" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SecondaryTextBrush}" Margin="0,0,8,0"
+                                   VerticalAlignment="Center" />
+                        <TextBlock x:Name="ExtraHint" FontSize="12"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <CheckBox x:Name="CompanionCheck" FontSize="13.5" Margin="0,0,24,0"
+                                  Tag="prevent-device-companion-apps"
+                                  Checked="ExtraOption_Changed" Unchecked="ExtraOption_Changed" />
+                        <CheckBox x:Name="WpbtCheck" FontSize="13.5"
+                                  Tag="wpbt"
+                                  Checked="ExtraOption_Changed" Unchecked="ExtraOption_Changed" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center"
                     Margin="0,18,0,0">

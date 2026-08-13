@@ -15,7 +15,7 @@ KiWin is the "shell": a GUI + install plan + config generation layer that drives
 - **WinUtil options** (Advanced, enabled by default): block **Device Companion Apps**, block **WPBT** (OEM firmware at boot)
 - **Browsers**: Waterfox · Helium · Firefox · Brave · LibreWolf (winget IDs: `Waterfox.Waterfox`, `ImputNet.Helium`, `Mozilla.Firefox`, `Brave.Brave`, `LibreWolf.LibreWolf`)
 - **Languages**: English / Tiếng Việt
-- **Presets**: Standard (full) / Debloat Lite — plus install-plan JSON import/export
+- **Presets**: Standard (full) / Minimal — plus install-plan JSON import/export
 - **CLI**: `headless`, `dry-run`, `config`, `skip-<step>-step`
 
 ## Requirements

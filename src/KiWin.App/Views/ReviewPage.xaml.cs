@@ -17,6 +17,7 @@ public partial class ReviewPage : UserControl
 
     private bool InternetAvailable { get; set; }
     private bool _presetUpdating;
+    private bool _extraUpdating;
 
     public void SetInternetAvailable(bool available)
     {
@@ -47,6 +48,12 @@ public partial class ReviewPage : UserControl
         NoUpdatesWarning.Text = Localization.T("configuration.review.no_updates_warning");
         EmptyText.Text = Localization.T("configuration.review.empty");
         PresetLabel.Text = Localization.T("configuration.review.preset");
+        ExtraTitle.Text = Localization.T("configuration.review.optional_title");
+        ExtraHint.Text = Localization.T("configuration.review.optional_hint");
+        CompanionCheck.Content = StepCatalog.StepText("prevent-device-companion-apps");
+        CompanionCheck.ToolTip = StepCatalog.StepTooltip("prevent-device-companion-apps");
+        WpbtCheck.Content = StepCatalog.StepText("wpbt");
+        WpbtCheck.ToolTip = StepCatalog.StepTooltip("wpbt");
         BackButton.Content = Localization.T("configuration.review.back");
         ResetButton.Content = Localization.T("configuration.review.reset_defaults");
         AdvancedButton.Content = Localization.T("configuration.review.advanced");
@@ -73,10 +80,32 @@ public partial class ReviewPage : UserControl
         PresetCombo.SelectedIndex = idx;
 
         var items = InstallPlan.VisibleEnabledItems(plan)
+            .Where(v => !StepCatalog.BoolOptionSlugs.Contains(v.Key))
             .Select(v => new ReviewItem(v.Key, v.Text, v.Tooltip))
             .ToList();
         ItemsList.ItemsSource = items;
         EmptyText.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        _extraUpdating = true;
+        try
+        {
+            CompanionCheck.IsChecked = InstallPlan.IsItemEnabled(plan, "prevent-device-companion-apps");
+            WpbtCheck.IsChecked = InstallPlan.IsItemEnabled(plan, "wpbt");
+        }
+        finally
+        {
+            _extraUpdating = false;
+        }
+    }
+
+    private void ExtraOption_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_extraUpdating || sender is not CheckBox { Tag: string key } check)
+            return;
+        var data = InstallPlan.LoadInstallPlan();
+        InstallPlan.SetItemEnabled(data, key, check.IsChecked == true);
+        InstallPlan.SaveInstallPlan(data);
+        Refresh();
     }
 
     private void PresetCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)

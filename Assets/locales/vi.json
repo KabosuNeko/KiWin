@@ -37,7 +37,9 @@
             "back": "Quay lại",
             "advanced": "Nâng cao",
             "start_button": "BẮT ĐẦU",
-            "custom_preset": "Tùy chỉnh"
+            "custom_preset": "Tùy chỉnh",
+            "optional_title": "Tùy chọn — có thể bạn không muốn",
+            "optional_hint": "Tắt mặc định. Chỉ bật nếu bạn hiểu chúng làm gì."
         },
         "advanced": {
             "title": "Cài đặt nâng cao",
