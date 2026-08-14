@@ -29,6 +29,9 @@ KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks �
 - Windows 11
 - **Administrator** rights (UAC prompt on launch)
 - Internet connection (browser install, script downloads)
+- Windows Defender: **leave it on.**
+
+Most "debloat" tools make you switch off your antivirus (and sometimes half of Windows, and a rubber chicken, and your better judgment) before they'll run. It's a weird ritual — you're about to let a script modify your whole system, and the advice is to first remove the one thing still watching it. KiWin doesn't do that. It only touches what you actually pick in the plan, uses widely-reviewed community scripts (Chris Titus Tech WinUtil, Raphire Win11Debloat), and is perfectly happy with Defender fully armed. If your AV still gets jumpy about the PowerShell scripts, add a file exclusion instead of pulling the shield. Your machine, your call — but the shield staying up costs you nothing here.
 
 ## Quick start
 
