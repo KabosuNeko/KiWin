@@ -5,10 +5,10 @@
 # system receives full Windows updates again.
 #
 # Also removes the automatic renewal scheduled task and helper files created by
-# update_policy_changer.ps1 (DTLegit-style annual reapply), otherwise the policy
-# would be silently re-applied later. Both the current (WindowsUpdateSettingsTask)
-# and legacy (CheckSecuritySettings / ReapplySecuritySettings) task names and
-# helper folders are cleaned up.
+# update_policy_changer.ps1 (annual reapply), otherwise the policy would be
+# silently re-applied later. Both the current (KiWinUpdatePolicyRenewal) and
+# legacy (WindowsUpdateSettingsTask / CheckSecuritySettings /
+# ReapplySecuritySettings) task names and helper folders are cleaned up.
 #
 # NOTE: This only removes the policy values that KiWin sets. Other policy values
 # under the same registry keys (if any) are left untouched.
@@ -20,7 +20,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Remove the automatic renewal scheduled tasks and helper files first
-$UpdateTasks = @("WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings")
+$UpdateTasks = @("KiWinUpdatePolicyRenewal", "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings")
 foreach ($TaskName in $UpdateTasks) {
     if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
         Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
@@ -29,6 +29,7 @@ foreach ($TaskName in $UpdateTasks) {
 }
 
 $HelperFolders = @(
+    "C:\ProgramData\KiWin\UpdatePolicy",
     "C:\ProgramData\Windows Updates Settings",
     "C:\ProgramData\UpdateWindowsUpdatePoliciesAnnually"
 )
