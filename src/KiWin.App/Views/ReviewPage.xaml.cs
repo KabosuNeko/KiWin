@@ -73,6 +73,7 @@ public partial class ReviewPage : UserControl
         PresetCombo.SelectedIndex = idx;
 
         var items = InstallPlan.VisibleAllItems(plan)
+            .Where(v => v.Key != "developer-mode")
             .Select(v => new ReviewItem(v.Key, v.Text, v.Tooltip, v.IsEnabled))
             .ToList();
         ItemsList.ItemsSource = items;

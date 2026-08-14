@@ -24,6 +24,7 @@ public static class StepCatalog
         "debloat-windows-phase-one",
         "debloat-windows-phase-two",
         "configure-updates",
+        "unpin-taskbar-start",
     };
 
     public static readonly string[] BoolOptionSlugs =
@@ -41,6 +42,7 @@ public static class StepCatalog
         ["debloat-windows-phase-one"] = new("steps.debloat_windows_phase_one.text", "steps.debloat_windows_phase_one.tooltip"),
         ["debloat-windows-phase-two"] = new("steps.debloat_windows_phase_two.text", "steps.debloat_windows_phase_two.tooltip"),
         ["configure-updates"] = new("steps.configure_updates.text", "steps.configure_updates.tooltip"),
+        ["unpin-taskbar-start"] = new("steps.unpin_taskbar_start.text", "steps.unpin_taskbar_start.tooltip"),
         ["developer-mode"] = new("steps.developer_mode.text", "steps.developer_mode.tooltip"),
         ["prevent-device-companion-apps"] = new("steps.prevent_device_companion_apps.text", "steps.prevent_device_companion_apps.tooltip"),
         ["wpbt"] = new("steps.wpbt.text", "steps.wpbt.tooltip"),
