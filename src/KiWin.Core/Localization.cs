@@ -23,6 +23,8 @@ public class Localization
     public static List<string> CandidateDirs(string sub)
     {
         var list = new List<string>();
+        if (AppPaths.BundleAvailable)
+            list.Add(Path.Combine(AppPaths.AppDataDir(), sub));
         var baseDir = AppContext.BaseDirectory;
         list.Add(Path.Combine(baseDir, sub));
         list.Add(Path.Combine(baseDir, "..", sub));

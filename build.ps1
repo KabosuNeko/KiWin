@@ -45,6 +45,19 @@ else {
     Set-Content -LiteralPath $o1 -Value $patched -Encoding UTF8
 }
 
+Write-Host "Bundling assets and external scripts into appbundle.zip..."
+$bundleDir = Join-Path $ROOT "src\KiWin.App\Resources"
+New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
+$bundlePath = Join-Path $bundleDir "appbundle.zip"
+if (Test-Path $bundlePath) { Remove-Item -Force $bundlePath }
+$stage = Join-Path $bundleDir "stage"
+if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }
+New-Item -ItemType Directory -Force -Path (Join-Path $stage "external_scripts") | Out-Null
+Copy-Item (Join-Path $ROOT "Assets\*") $stage -Recurse -Force
+Copy-Item (Join-Path $SCRIPT_BUNDLE_DIR "*") (Join-Path $stage "external_scripts") -Recurse -Force
+Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $bundlePath -CompressionLevel Optimal -Force
+Remove-Item -Recurse -Force $stage
+
 Write-Host "Building KiWin (.NET Framework 4.8)..."
 dotnet publish (Join-Path $ROOT "src\KiWin.App\KiWin.App.csproj") `
     -c Release `
@@ -53,11 +66,13 @@ dotnet publish (Join-Path $ROOT "src\KiWin.App\KiWin.App.csproj") `
     -o $outDir
 
 Write-Host ""
-Write-Host "Build complete: $outDir\KiWin.exe"
-Write-Host "Assets (media, locales, presets, debloat_scripts, external_scripts) are copied next to KiWin.exe."
+Write-Host "Build complete: $outDir\KiWin.exe (single file)"
 
-Copy-Item (Join-Path $ROOT "Assets\media\ICON.ico") (Join-Path $outDir "media\ICON.ico") -Force
-Write-Host "ICON.ico re-copied to dist\media."
+$configFile = Join-Path $outDir "KiWin.exe.config"
+if (Test-Path $configFile) {
+    Remove-Item -Force $configFile
+    Write-Host "Removed KiWin.exe.config (single-file build; runs on the installed .NET Framework CLR)."
+}
 
 Write-Host ""
 Write-Host "Packaging release bundle..."

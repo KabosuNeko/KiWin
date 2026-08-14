@@ -1,4 +1,5 @@
 using System.Text;
+using KiWin.Core;
 
 namespace KiWin.Utilities;
 
@@ -46,6 +47,10 @@ public static class Logger
 
     public static string BasePath()
     {
+        if (AppPaths.BundleAvailable)
+        {
+            try { return AppPaths.AppDataDir(); } catch { }
+        }
         try
         {
             var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? AppDomain.CurrentDomain.BaseDirectory;
