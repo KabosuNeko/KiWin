@@ -13,6 +13,7 @@
     {"key": "debloat-windows-phase-one", "enabled": true},
     {"key": "debloat-windows-phase-two", "enabled": true},
     {"key": "configure-updates", "enabled": true},
+    {"key": "unpin-taskbar-start", "enabled": true},
     {"key": "prevent-device-companion-apps", "enabled": true},
     {"key": "wpbt", "enabled": true},
     {"key": "remove-onedrive", "enabled": true},
@@ -36,9 +37,8 @@
       "WPFTweaksDisableStoreSearch",
       "WPFTweaksLocation",
       "WPFTweaksReservedStorage",
-      "WPFTweaksRestorePoint",
       "WPFTweaksRazerBlock"
     ]
   },
-  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
+  "win11debloat_args": "-Silent -RemoveApps -RemoveGamingApps -DisableTelemetry -DisableBing -DisableSuggestions -DisableLockscreenTips -RevertContextMenu -DisableWidgets -DisableCopilot -ClearStartAllUsers -DisableDVR -DisableStartRecommended -ExplorerToThisPC -DisableDesktopSpotlight -DisableSettings365Ads -DisableSettingsHome -DisablePaintAI -DisableNotepadAI -DisableEdgeAI -DisableStickyKeys -DisableEdgeAds -DisableBraveBloat -DisableRecall -DisableAISvcAutoStart -DisableClickToDo -DisableSearchHistory -DisableDeliveryOptimization -DisableDeviceAutoAppDownload -DisableSearchHighlights -DisableStoreSearchSuggestions -DisableLocationServices -DisableFindMyDevice -PreventUpdateAutoReboot -DisableStartPhoneLink -DisableModernStandbyNetworking"
 }

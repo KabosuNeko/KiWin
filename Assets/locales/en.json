@@ -14,6 +14,7 @@
             "debloat_windows_phase_one": "Debloating Windows phase one (WinUtil)...",
             "debloat_windows_phase_two": "Debloating Windows phase two (Win11Debloat)...",
             "configure_updates": "Configuring Windows Update policies...",
+            "unpin_taskbar_start": "Unpinning all Taskbar and Start pinned items...",
             "dry_run_complete": "Dry run complete. No system changes were made.",
             "complete_no_restart": "Installation complete. KiWin will not restart your system automatically."
         }
@@ -84,6 +85,10 @@
         "configure_updates": {
             "text": "Set security-only update policy",
             "tooltip": "KiWin restricts Windows to security updates only, preventing bloatware from returning. This block is permanent on Pro and expires after 365 days on Home."
+        },
+        "unpin_taskbar_start": {
+            "text": "Unpin all Taskbar and Start items",
+            "tooltip": "Removes all pinned apps from the Taskbar and the pinned section of the Start menu, giving you a clean, empty layout that you personalize yourself."
         },
         "developer_mode": {
             "text": "Developer mode (hide installation overlay)",

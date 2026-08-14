@@ -44,6 +44,7 @@ public static class Program
         new("debloat-windows-phase-one", "app.install_overlay.debloat_windows_phase_one", DebloatKind.ConfigPath),
         new("debloat-windows-phase-two", "app.install_overlay.debloat_windows_phase_two", DebloatKind.ConfigPath),
         new("configure-updates", "app.install_overlay.configure_updates", DebloatKind.None),
+        new("unpin-taskbar-start", "app.install_overlay.unpin_taskbar_start", DebloatKind.None),
     };
 
     [STAThread]
@@ -478,6 +479,8 @@ public static class Program
                                 DebloatRemoveEdge.Main();
                             else if (step.Slug == "configure-updates")
                                 DebloatConfigureUpdates.Main();
+                            else if (step.Slug == "unpin-taskbar-start")
+                                DebloatUnpinTaskbar.Main();
                             break;
                     }
                 }

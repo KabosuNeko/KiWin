@@ -14,6 +14,7 @@
             "debloat_windows_phase_one": "Đang dọn Windows giai đoạn một (WinUtil)...",
             "debloat_windows_phase_two": "Đang dọn Windows giai đoạn hai (Win11Debloat)...",
             "configure_updates": "Đang cấu hình chính sách Windows Update...",
+            "unpin_taskbar_start": "Đang gỡ ghim toàn bộ Taskbar và Start...",
             "dry_run_complete": "Hoàn tất chạy thử. Không có thay đổi nào được thực hiện.",
             "complete_no_restart": "Cài đặt hoàn tất. KiWin sẽ không tự khởi động lại hệ thống."
         }
@@ -84,6 +85,10 @@
         "configure_updates": {
             "text": "Đặt chính sách chỉ cập nhật bảo mật",
             "tooltip": "KiWin giới hạn Windows chỉ nhận các bản cập nhật bảo mật, ngăn bloatware quay trở lại. Chặn này có hiệu lực vĩnh viễn trên Windows Pro và hết hạn sau 365 ngày trên Windows Home."
+        },
+        "unpin_taskbar_start": {
+            "text": "Gỡ ghim toàn bộ Taskbar và Start",
+            "tooltip": "Gỡ tất cả ứng dụng đã ghim trên Taskbar và phần ghim trong menu Start, để lại bố cục trống sạch để bạn tự tùy chỉnh."
         },
         "developer_mode": {
             "text": "Chế độ nhà phát triển (ẩn lớp phủ cài đặt)",
