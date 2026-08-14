@@ -45,15 +45,9 @@ else {
     Set-Content -LiteralPath $o1 -Value $patched -Encoding UTF8
 }
 
-Write-Host "Publishing KiWin..."
+Write-Host "Building KiWin (.NET Framework 4.8)..."
 dotnet publish (Join-Path $ROOT "src\KiWin.App\KiWin.App.csproj") `
     -c Release `
-    -r win-x64 `
-    --self-contained `
-    -p:PublishSingleFile=true `
-    -p:PublishReadyToRun=false `
-    -p:IncludeNativeLibrariesForSelfExtract=true `
-    -p:IncludeAllContentForSelfExtract=false `
     -p:DebugType=None `
     -p:DebugSymbols=false `
     -o $outDir

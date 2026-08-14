@@ -32,7 +32,7 @@ public static class AdminHelper
 
     public static void RunAsAdmin(IReadOnlyList<string>? extraArgs = null)
     {
-        var executable = Environment.ProcessPath ?? AppContext.BaseDirectory;
+        var executable = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? AppDomain.CurrentDomain.BaseDirectory;
         var args = new List<string>();
         if (extraArgs is not null)
             args.AddRange(extraArgs);

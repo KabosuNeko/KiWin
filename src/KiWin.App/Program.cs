@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using KiWin.Core;
@@ -188,7 +193,7 @@ public static class Program
 
     private static bool LaunchDeveloperConsole(IReadOnlyList<string> rawArgs)
     {
-        var exe = Environment.ProcessPath ?? AppContext.BaseDirectory;
+        var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? AppDomain.CurrentDomain.BaseDirectory;
         var commandLine = $"\"{exe}\" {string.Join(" ", rawArgs.Select(a => $"\"{a}\""))}";
         try
         {
@@ -223,7 +228,7 @@ public static class Program
                 throw new ArgumentException(
                     $"Invalid argument '{token}'. Use key=value format, e.g. configure-updates=false.");
             }
-            var parts = token.Split('=', 2);
+            var parts = token.Split(new[] { '=' }, 2);
             var key = parts[0].Trim().ToLowerInvariant();
             var value = parts[1].Trim();
 
@@ -306,7 +311,7 @@ public static class Program
         ApplyWinUtilToggles(plan, winutil);
         AddOutlookRemoval(winutil, plan);
         var rawArgs = plan.GetString("win11debloat_args");
-        var win11Args = rawArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        var win11Args = rawArgs.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
             .Where(a => !(a == "-RemoveApps" && !InstallPlan.IsItemEnabled(plan, "remove-apps")))
             .Where(a => !(a == "-RemoveGamingApps" && !InstallPlan.IsItemEnabled(plan, "remove-gaming-apps")))
             .ToList();

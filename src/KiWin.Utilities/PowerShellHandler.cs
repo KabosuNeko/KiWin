@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace KiWin.Utilities;
 
@@ -101,7 +106,7 @@ public static class PowerShellHandler
             {
                 Logger.Info($"Termination string '{terminationStr}' detected.");
                 terminationDetected = true;
-                try { proc.Kill(entireProcessTree: true); } catch { }
+                try { KillProcessTree(proc); } catch { }
             }
         }
 
@@ -123,7 +128,7 @@ public static class PowerShellHandler
                 if (cancel.IsCancellationRequested)
                 {
                     Logger.Warning("Killing PowerShell due to external cancellation.");
-                    try { proc.Kill(entireProcessTree: true); } catch { }
+                    try { KillProcessTree(proc); } catch { }
                     break;
                 }
                 Thread.Sleep(100);
@@ -160,6 +165,24 @@ public static class PowerShellHandler
 
     private static string EscapeArg(string value) =>
         "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+
+    private static void KillProcessTree(Process process)
+    {
+        try
+        {
+            var startInfo = new ProcessStartInfo("taskkill", $"/F /T /PID {process.Id}")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            using var killer = Process.Start(startInfo);
+            killer?.WaitForExit(5000);
+        }
+        catch
+        {
+            try { process.Kill(); } catch { }
+        }
+    }
 
     private static string Localization_T(string key, Dictionary<string, object?>? parameters = null)
     {
