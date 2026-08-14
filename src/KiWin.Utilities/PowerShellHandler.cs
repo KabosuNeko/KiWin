@@ -40,14 +40,15 @@ public static class PowerShellHandler
         bool monitorOutput = false,
         string? terminationStr = null,
         CancellationToken cancel = default,
-        bool allowContinueOnFail = false)
+        bool allowContinueOnFail = false,
+        TimeSpan? timeout = null)
     {
         var scriptPath = ResolveScriptPath(script);
         var argLine = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"";
         if (args is not null)
             argLine += " " + string.Join(" ", args.Select(EscapeArg));
         Logger.Info($"Launching PowerShell: powershell.exe {argLine}");
-        return RunCore(argLine, Path.GetFileName(scriptPath), "PSCRIPT", monitorOutput, terminationStr, cancel, allowContinueOnFail);
+        return RunCore(argLine, Path.GetFileName(scriptPath), "PSCRIPT", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout);
     }
 
     public static int RunCommand(
@@ -55,11 +56,12 @@ public static class PowerShellHandler
         bool monitorOutput = false,
         string? terminationStr = null,
         CancellationToken cancel = default,
-        bool allowContinueOnFail = false)
+        bool allowContinueOnFail = false,
+        TimeSpan? timeout = null)
     {
         var argLine = $"-NoProfile -ExecutionPolicy Bypass -Command {EscapeArg(command)}";
         Logger.Info($"Launching PowerShell command: {command}");
-        return RunCore(argLine, "command", "PCOMMAND", monitorOutput, terminationStr, cancel, allowContinueOnFail);
+        return RunCore(argLine, "command", "PCOMMAND", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout);
     }
 
     private static int RunCore(
@@ -69,7 +71,8 @@ public static class PowerShellHandler
         bool monitorOutput,
         string? terminationStr,
         CancellationToken cancel,
-        bool allowContinueOnFail)
+        bool allowContinueOnFail,
+        TimeSpan? timeout = null)
     {
         var psi = new ProcessStartInfo("powershell.exe")
         {
@@ -96,6 +99,9 @@ public static class PowerShellHandler
         }
 
         var terminationDetected = false;
+        var timedOut = false;
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
+        if (timeout is { } t) cts.CancelAfter(t);
 
         void StreamOut(object? s, DataReceivedEventArgs e)
         {
@@ -125,9 +131,17 @@ public static class PowerShellHandler
         {
             while (!proc.HasExited)
             {
-                if (cancel.IsCancellationRequested)
+                if (cts.IsCancellationRequested)
                 {
-                    Logger.Warning("Killing PowerShell due to external cancellation.");
+                    if (!cancel.IsCancellationRequested)
+                    {
+                        timedOut = true;
+                        Logger.Warning($"Killing PowerShell due to timeout ({timeout}).");
+                    }
+                    else
+                    {
+                        Logger.Warning("Killing PowerShell due to external cancellation.");
+                    }
                     try { KillProcessTree(proc); } catch { }
                     break;
                 }
@@ -142,6 +156,12 @@ public static class PowerShellHandler
         proc.CancelOutputRead();
         proc.CancelErrorRead();
         var rc = proc.ExitCode;
+        if (timedOut)
+        {
+            var message = $"PowerShell {label} timed out after {timeout}.";
+            Logger.Error(message);
+            throw new InvalidOperationException(message);
+        }
         if (terminationDetected && monitorOutput && rc != 0)
         {
             Logger.Info($"PowerShell terminated after detecting '{terminationStr}'. Treating exit code {rc} as success.");
