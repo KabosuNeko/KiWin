@@ -48,15 +48,15 @@ Requires [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
 dotnet build KiWin.slnx -c Debug
 dotnet run --project src/KiWin.App -c Debug
 
-# Full release bundle (downloads WinUtil + Win11Debloat, publishes to dist\)
+# Full release bundle
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-`build.ps1` downloads the latest `winutil.ps1` and Win11Debloat (tag `2026.07.11`) into `external_scripts\`, patches WinUtil for silent operation, and builds `dist\KiWin.exe` targeting .NET Framework 4.8 (single-file via Costura.Fody, < 1MB). If `external_scripts\` already exists, downloads are skipped.
+`build.ps1` downloads the latest `winutil.ps1` and Win11Debloat (tag `2026.07.11`) into `external_scripts\`, patches WinUtil for silent operation, then embeds assets, scripts, presets and locales into the executable. The result is a **single self-contained `dist\KiWin.exe`** (~1.5 MB, .NET Framework 4.8); on first run it extracts its embedded bundle to `%LOCALAPPDATA%\KiWin`. If `external_scripts\` already exists, downloads are skipped.
 
 ## Run
 
-Run `KiWin.exe` (in `dist\`) as administrator. The `media/`, `locales/`, `presets/`, `debloat_scripts/`, `external_scripts/` folders must sit next to the executable.
+Run `KiWin.exe` (in `dist\`) as administrator. Everything needed is embedded in the file — no other files or folders required. The app shows a fullscreen overlay while the debloat runs and exits automatically when done.
 
 ## CLI
 
