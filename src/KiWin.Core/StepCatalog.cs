@@ -67,7 +67,6 @@ public static class StepCatalog
             "WPFTweaksDisableStoreSearch",
             "WPFTweaksLocation",
             "WPFTweaksReservedStorage",
-            "WPFTweaksRestorePoint",
             "WPFTweaksRazerBlock")
     };
 

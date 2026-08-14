@@ -228,7 +228,8 @@ public static class DebloatExecuteExternalScripts
         Logger.Info("Executing ChrisTitusTech WinUtil");
         try
         {
-            PowerShellHandler.RunCommand(cmd, monitorOutput: true, terminationStr: "Tweaks are Finished");
+            PowerShellHandler.RunCommand(cmd, monitorOutput: true, terminationStr: "Tweaks are Finished",
+                timeout: TimeSpan.FromMinutes(25));
             Logger.Info("Successfully executed ChrisTitusTech WinUtil");
         }
         catch (Exception e)
@@ -275,7 +276,7 @@ public static class DebloatExecuteExternalScripts
         Logger.Info("Executing Raphire Win11Debloat");
         try
         {
-            PowerShellHandler.RunCommand(cmd);
+            PowerShellHandler.RunCommand(cmd, timeout: TimeSpan.FromMinutes(15));
             Logger.Info("Successfully executed Raphire Win11Debloat");
         }
         catch (Exception e)
