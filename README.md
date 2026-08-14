@@ -35,7 +35,7 @@ Most "debloat" tools make you switch off your antivirus (and sometimes half of W
 
 ## Quick start
 
-1. Download **KiWin.exe** from the [Releases](https://github.com/KabosuNeko/KiWin/releases/latest) page (the only file there — no installer needed).
+1. Download **KiWin.exe** from the [Releases](https://github.com/KabosuNeko/KiWin/releases/latest) page.
 2. Run it and accept the UAC prompt. If SmartScreen warns about an unsigned app, click *More info → Run anyway*.
 3. Pick a preset, click **Start**. On first run the app extracts its embedded bundle to `%LOCALAPPDATA%\KiWin` automatically and shuts down when the debloat finishes.
 
