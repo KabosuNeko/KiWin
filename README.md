@@ -41,7 +41,7 @@ Most "debloat" tools make you switch off your antivirus (and sometimes half of W
 
 ## Build from source
 
-Requires [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
+Requires [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) on Windows — the SDK is only needed to **compile** the source (the repo uses the `.slnx` solution format, which needs SDK 9.0.200+). The app itself targets **.NET Framework 4.8**, which is pre-installed on Windows — users never need to install anything to run it.
 
 ```powershell
 # Build & run (Debug)
