@@ -48,7 +48,7 @@ public static class Logger
     {
         try
         {
-            var exe = Environment.ProcessPath ?? AppContext.BaseDirectory;
+            var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? AppDomain.CurrentDomain.BaseDirectory;
             return Path.GetDirectoryName(exe) ?? AppContext.BaseDirectory;
         }
         catch

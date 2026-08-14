@@ -95,7 +95,7 @@ public partial class AdvancedPage : UserControl
     {
         try
         {
-            var lines = WinUtilBox.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            var lines = WinUtilBox.Text.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => l.Trim())
                 .Where(l => l.Length > 0)
                 .ToList();

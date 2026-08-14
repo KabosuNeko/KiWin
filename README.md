@@ -52,7 +52,7 @@ dotnet run --project src/KiWin.App -c Debug
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-`build.ps1` downloads the latest `winutil.ps1` and Win11Debloat (tag `2026.07.11`) into `external_scripts\`, patches WinUtil for silent operation, and publishes `dist\KiWin.exe` (self-contained single-file). If `external_scripts\` already exists, downloads are skipped.
+`build.ps1` downloads the latest `winutil.ps1` and Win11Debloat (tag `2026.07.11`) into `external_scripts\`, patches WinUtil for silent operation, and builds `dist\KiWin.exe` targeting .NET Framework 4.8 (single-file via Costura.Fody, < 1MB). If `external_scripts\` already exists, downloads are skipped.
 
 ## Run
 

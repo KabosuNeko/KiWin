@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using KiWin.Core;
@@ -131,7 +132,7 @@ public static class DebloatExecuteExternalScripts
         if (obj["win11debloat_args"] is JsonNode value)
         {
             if (value is JsonValue strVal && strVal.TryGetValue<string>(out var str))
-                return str.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+                return str.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             if (value is JsonArray arr)
             {
                 var cleaned = arr.Where(n => n is JsonValue).Select(n => n!.GetValue<string>()).ToList();

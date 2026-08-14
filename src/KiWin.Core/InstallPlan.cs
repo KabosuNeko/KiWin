@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using KiWin.Core;
@@ -34,7 +38,7 @@ public static class InstallPlan
         }
         var compact = NormalizeWin11DebloatArgsText(value?.GetValue<string>() ?? "");
         if (compact.Length == 0) return "";
-        return string.Join("\n", compact.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        return string.Join("\n", compact.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
     }
 
     public static JsonNode? NormalizeWinutilConfig(JsonNode? value)

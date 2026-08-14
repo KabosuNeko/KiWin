@@ -128,7 +128,7 @@ public static class StepCatalog
 
     public static string ToTitleLabel(string key)
     {
-        var parts = key.Replace("-", " ").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var parts = key.Replace("-", " ").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         return string.Join(" ", parts.Select(p => p.Length > 0 ? char.ToUpper(p[0]) + p[1..] : p));
     }
 
