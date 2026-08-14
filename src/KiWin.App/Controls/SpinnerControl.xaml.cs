@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,12 +13,13 @@ public partial class SpinnerControl : UserControl
     public SpinnerControl()
     {
         InitializeComponent();
+        Loaded += (_, _) => Start();
     }
 
     public void Start()
     {
         if (_animation is not null) return;
-        _animation = new DoubleAnimation(0, 360, TimeSpan.FromMilliseconds(1200))
+        _animation = new DoubleAnimation(0, 360, TimeSpan.FromMilliseconds(1000))
         {
             RepeatBehavior = RepeatBehavior.Forever,
         };

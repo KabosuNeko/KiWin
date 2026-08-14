@@ -124,11 +124,14 @@ public static class Program
             ErrorDialog.Implementation = new WpfErrorDialog();
             app = new App();
             app.InitializeComponent();
+            app.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
             var window = new MainWindow();
-            var flowCompleted = false;
+            var startTriggered = false;
             var flowOk = false;
+
             window.StartTriggered += () =>
             {
+                startTriggered = true;
                 try
                 {
                     plan = InstallPlan.LoadInstallPlan();
@@ -138,6 +141,7 @@ public static class Program
                         var message = Localization.T("errors.empty_execution_plan");
                         Logger.Error(message);
                         ErrorDialog.Show(message, false);
+                        app.Shutdown(1);
                         return;
                     }
                     runtimeSelectedBrowserPackage = plan.GetString("selected_browser_package").Trim();
@@ -162,33 +166,50 @@ public static class Program
                         overlay = new InstallOverlayWindow();
                         overlay.Show();
                     }
-                    flowOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
-                        runtimeSelectedBrowserPackage, overlay);
-                    if (overlay is not null)
+
+                    Task.Run(() =>
                     {
-                        Thread.Sleep(2500);
-                        overlay.Close();
-                    }
-                    Logger.Info(flowOk ? "Debloat process finished successfully." : "Debloat process aborted.");
+                        try
+                        {
+                            flowOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
+                                runtimeSelectedBrowserPackage, overlay);
+                            if (overlay is not null)
+                            {
+                                Thread.Sleep(2500);
+                                overlay.Dispatcher.Invoke(() => overlay.Close());
+                            }
+                            Logger.Info(flowOk ? "Debloat process finished successfully." : "Debloat process aborted.");
+                        }
+                        catch (Exception e)
+                        {
+                            flowOk = false;
+                            Logger.Exception("Debloat flow failed", e);
+                            try { ErrorDialog.Show(Localization.T("errors.installation_unexpected"), false); } catch { }
+                        }
+                        finally
+                        {
+                            app?.Dispatcher.Invoke(() => app.Shutdown(flowOk ? 0 : 1));
+                        }
+                    });
                 }
                 catch (Exception e)
                 {
                     flowOk = false;
-                    Logger.Exception("Debloat flow failed", e);
+                    Logger.Exception("Debloat flow initialization failed", e);
                     try { ErrorDialog.Show(Localization.T("errors.installation_unexpected"), false); } catch { }
-                }
-                finally
-                {
-                    flowCompleted = true;
-                    app?.Shutdown();
+                    app.Shutdown(1);
                 }
             };
+
             window.Closed += (_, _) =>
             {
-                if (flowCompleted) return;
-                Logger.Info("Initial window closed without Start; exiting before debloat process starts.");
-                app?.Shutdown();
+                if (!startTriggered)
+                {
+                    Logger.Info("Initial window closed without Start; exiting before debloat process starts.");
+                    app?.Shutdown(0);
+                }
             };
+
             app.Run(window);
             return flowOk ? 0 : 1;
         }
