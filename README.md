@@ -8,21 +8,22 @@
 
 **Windows without the suck.**
 
-KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks — written in C#/WPF. Acting as a central management shell, it combines a clean GUI, installation planner, and config generator to run trusted debloat tools alongside its own custom scripts. **Pure Debloat: Focused solely on system optimization and bloatware removal—zero visual or theme modifications to Windows.**
+KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks — written in C#/WPF. Acting as a central management shell, it combines a clean GUI, installation planner, and config generator to run trusted debloat tools alongside its own custom scripts. **Pure debloat: focused solely on system optimization and bloatware removal — zero visual or theme modifications to Windows.**
 
 ## Features
 
-- **5 debloat steps** (each can be toggled on/off in Advanced):
+- **6 debloat steps** (each can be toggled on/off in Advanced):
   1. Remove Microsoft Edge permanently
   2. Install your chosen browser (via **winget**, no extra setup)
   3. Debloat Windows phase 1 — **WinUtil** (Chris Titus Tech) with a curated tweak config (telemetry, OneDrive, Outlook, widgets, Xbox...)
-  4. Debloat Windows phase 2 — **Win11Debloat** (Raphire) with privacy/debloat flags
+  4. Debloat Windows phase 2 — **Win11Debloat** (Raphire) with privacy/debloat flags, incl. app & gaming-app removal
   5. Configure Windows Update to security-only policy (undo with `undo-update-policy=true`)
-- **WinUtil options** (Advanced, enabled by default): block **Device Companion Apps**, block **WPBT** (OEM firmware at boot)
+  6. Unpin all Taskbar and Start items (a blank Start layout is applied to all users)
+- **Options** (Advanced, enabled by default): block **Device Companion Apps**, block **WPBT** (OEM firmware at boot), remove **OneDrive**, remove **preinstalled apps**, remove **gaming apps**
 - **Browsers**: Waterfox · Helium · Firefox · Brave · LibreWolf (winget IDs: `Waterfox.Waterfox`, `ImputNet.Helium`, `Mozilla.Firefox`, `Brave.Brave`, `LibreWolf.LibreWolf`)
 - **Languages**: English / Tiếng Việt
 - **Presets**: Standard (full) / Minimal — plus install-plan JSON import/export
-- **CLI**: `headless`, `dry-run`, `config`, `skip-<step>-step`
+- **CLI**: `headless`, `dry-run`, `config`, `skip-<step>-step`, `undo-update-policy`
 
 ## Requirements
 
@@ -74,7 +75,7 @@ KiWin.exe undo-update-policy=true
 | `config` | path/URL | Use an existing plan JSON (or URL) |
 | `developer-mode` | bool | Hide the install overlay |
 | `undo-update-policy` | bool | Remove the security-only update policy (restore full Windows updates) |
-| `skip-<step>-step` | bool | Skip a step (e.g. `skip-configure-updates-step`) |
+| `skip-<step>-step` | bool | Skip a step (e.g. `skip-configure-updates-step`, `skip-unpin-taskbar-start-step`) |
 
 
 ## Third-party tools credits
