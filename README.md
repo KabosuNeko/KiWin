@@ -82,7 +82,7 @@ KiWin.exe undo-update-policy=true
 
 - [WinUtil](https://github.com/ChrisTitusTech/winutil) — Chris Titus Tech
 - [Win11Debloat](https://github.com/Raphire/Win11Debloat) — Raphire
-- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler) - DTLegit
+- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler) - DTLegit (technique credit for the security-only update policy)
 
 ## Disclaimer
 
