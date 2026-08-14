@@ -49,6 +49,7 @@ public static class Program
     [STAThread]
     public static int Main(string[] args)
     {
+        AppPaths.EnsureExtracted();
         Logger.Init();
         var rawArgs = args.ToList();
 

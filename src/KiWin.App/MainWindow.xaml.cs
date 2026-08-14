@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,9 +20,26 @@ public partial class MainWindow : Window
 
     public bool StartRequested { get; private set; }
 
+    private void ApplyAppIcon()
+    {
+        try
+        {
+            var iconPath = AppPaths.Resolve(@"media\ICON.ico");
+            if (!File.Exists(iconPath)) return;
+            var icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
+            Icon = icon;
+            LogoIcon.Source = icon;
+        }
+        catch (Exception e)
+        {
+            Logger.Exception("Failed to load app icon", e);
+        }
+    }
+
     public MainWindow()
     {
         InitializeComponent();
+        ApplyAppIcon();
         SourceInitialized += (_, _) => SetDarkTitleBar();
         BrowserPage.BrowserSelected += (packageId, name) =>
         {

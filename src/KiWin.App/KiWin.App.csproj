@@ -32,8 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Assets\**\*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\external_scripts\**\*" Link="external_scripts\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Resources\appbundle.zip" Condition="Exists('Resources\appbundle.zip')" LogicalName="appbundle.zip" />
   </ItemGroup>
 
 </Project>
