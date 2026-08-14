@@ -66,17 +66,10 @@ dotnet publish (Join-Path $ROOT "src\KiWin.App\KiWin.App.csproj") `
     -o $outDir
 
 Write-Host ""
-Write-Host "Build complete: $outDir\KiWin.exe (single file)"
+Write-Host "Build complete: $outDir\KiWin.exe (single self-contained exe; run it directly)"
 
 $configFile = Join-Path $outDir "KiWin.exe.config"
 if (Test-Path $configFile) {
     Remove-Item -Force $configFile
     Write-Host "Removed KiWin.exe.config (single-file build; runs on the installed .NET Framework CLR)."
 }
-
-Write-Host ""
-Write-Host "Packaging release bundle..."
-$zipPath = Join-Path $ROOT "KiWin.zip"
-if (Test-Path $zipPath) { Remove-Item -Force $zipPath }
-Compress-Archive -Path (Join-Path $outDir "*") -DestinationPath $zipPath -CompressionLevel Optimal -Force
-Write-Host "Release bundle: $zipPath"

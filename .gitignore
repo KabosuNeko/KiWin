@@ -4,7 +4,6 @@ obj/
 
 # Publish output
 dist/
-KiWin.zip
 
 # Visual Studio / Rider
 .vs/

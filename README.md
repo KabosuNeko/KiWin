@@ -32,12 +32,9 @@ KiWin is a **Windows 11 debloat tool** that gets the job done in a few clicks �
 
 ## Quick start
 
-Open Terminal (Admin) by pressing Win + X, then paste and run the command below:
-```powershell
-irm https://raw.githubusercontent.com/KabosuNeko/KiWin/main/kiwin-install.ps1 | iex
-```
-
-Downloads the latest release bundle `KiWin.zip` from GitHub Releases, extracts it to `%LOCALAPPDATA%\KiWin` and launches the app (UAC prompt on start).
+1. Download **KiWin.exe** from the [Releases](https://github.com/KabosuNeko/KiWin/releases/latest) page (the only file there — no installer needed).
+2. Run it and accept the UAC prompt. If SmartScreen warns about an unsigned app, click *More info → Run anyway*.
+3. Pick a preset, click **Start**. On first run the app extracts its embedded bundle to `%LOCALAPPDATA%\KiWin` automatically and shuts down when the debloat finishes.
 
 ## Build from source
 
