@@ -117,43 +117,80 @@ public static class Program
         var runtimeConfigIsTemp = false;
         var runtimeSelectedBrowserPackage = "";
         var executionSteps = DebloatSteps.Select(s => (Step: s, Enabled: true)).ToList();
+        App? app = null;
 
         if (!cli.Headless)
         {
             ErrorDialog.Implementation = new WpfErrorDialog();
-            var app = new App();
+            app = new App();
             app.InitializeComponent();
             var window = new MainWindow();
-            app.Run(window);
-            if (!window.StartRequested)
+            var flowCompleted = false;
+            var flowOk = false;
+            window.StartTriggered += () =>
             {
-                Logger.Info("Initial window closed without Start; exiting before debloat process starts.");
-                return 0;
-            }
-            plan = InstallPlan.LoadInstallPlan();
-            executionSteps = BuildExecutionStepsFromPlan(plan);
-            if (executionSteps.Count == 0)
-            {
-                var message = Localization.T("errors.empty_execution_plan");
-                Logger.Error(message);
-                ErrorDialog.Show(message, false);
-                return 0;
-            }
-            runtimeSelectedBrowserPackage = plan.GetString("selected_browser_package").Trim();
-            foreach (var raw in plan["items"]?.AsArray() ?? new JsonArray())
-            {
-                if (raw is JsonObject obj && obj.GetString("key").Trim() == "developer-mode")
+                try
                 {
-                    if (obj.GetBool("enabled")) cli.DeveloperMode = true;
-                    break;
+                    plan = InstallPlan.LoadInstallPlan();
+                    executionSteps = BuildExecutionStepsFromPlan(plan);
+                    if (executionSteps.Count == 0)
+                    {
+                        var message = Localization.T("errors.empty_execution_plan");
+                        Logger.Error(message);
+                        ErrorDialog.Show(message, false);
+                        return;
+                    }
+                    runtimeSelectedBrowserPackage = plan.GetString("selected_browser_package").Trim();
+                    foreach (var raw in plan["items"]?.AsArray() ?? new JsonArray())
+                    {
+                        if (raw is JsonObject obj && obj.GetString("key").Trim() == "developer-mode")
+                        {
+                            if (obj.GetBool("enabled")) cli.DeveloperMode = true;
+                            break;
+                        }
+                    }
+                    if (!cli.DryRun)
+                    {
+                        var cfg = ExecutionConfigPath(cli, plan);
+                        runtimeConfigPath = cfg.Path;
+                        runtimeConfigIsTemp = cfg.IsTemp;
+                    }
+                    var useOverlay = !cli.DeveloperMode;
+                    InstallOverlayWindow? overlay = null;
+                    if (useOverlay)
+                    {
+                        overlay = new InstallOverlayWindow();
+                        overlay.Show();
+                    }
+                    flowOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
+                        runtimeSelectedBrowserPackage, overlay);
+                    if (overlay is not null)
+                    {
+                        Thread.Sleep(2500);
+                        overlay.Close();
+                    }
+                    Logger.Info(flowOk ? "Debloat process finished successfully." : "Debloat process aborted.");
                 }
-            }
-            if (!cli.DryRun)
+                catch (Exception e)
+                {
+                    flowOk = false;
+                    Logger.Exception("Debloat flow failed", e);
+                    try { ErrorDialog.Show(Localization.T("errors.installation_unexpected"), false); } catch { }
+                }
+                finally
+                {
+                    flowCompleted = true;
+                    app?.Shutdown();
+                }
+            };
+            window.Closed += (_, _) =>
             {
-                var cfg = ExecutionConfigPath(cli, plan);
-                runtimeConfigPath = cfg.Path;
-                runtimeConfigIsTemp = cfg.IsTemp;
-            }
+                if (flowCompleted) return;
+                Logger.Info("Initial window closed without Start; exiting before debloat process starts.");
+                app?.Shutdown();
+            };
+            app.Run(window);
+            return flowOk ? 0 : 1;
         }
         else
         {
@@ -169,27 +206,11 @@ public static class Program
                     return 1;
                 }
             }
+            var runOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
+                runtimeSelectedBrowserPackage, null);
+            Logger.Info(runOk ? "Debloat process finished successfully." : "Debloat process aborted.");
+            return runOk ? 0 : 1;
         }
-
-        var useOverlay = !cli.DeveloperMode;
-        InstallOverlayWindow? overlay = null;
-        if (useOverlay)
-        {
-            overlay = new InstallOverlayWindow();
-            overlay.Show();
-        }
-
-        var runOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
-            runtimeSelectedBrowserPackage, overlay);
-
-        if (overlay is not null)
-        {
-            Thread.Sleep(2500);
-            overlay.Close();
-        }
-
-        Logger.Info(runOk ? "Debloat process finished successfully." : "Debloat process aborted.");
-        return runOk ? 0 : 1;
     }
 
     private static bool LaunchDeveloperConsole(IReadOnlyList<string> rawArgs)

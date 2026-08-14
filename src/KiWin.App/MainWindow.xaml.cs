@@ -18,7 +18,7 @@ public partial class MainWindow : Window
     private UserControl? _currentPage;
     private UserControl? _pageBeforeLanguage;
 
-    public bool StartRequested { get; private set; }
+    public event Action? StartTriggered;
 
     private void ApplyAppIcon()
     {
@@ -69,7 +69,7 @@ public partial class MainWindow : Window
         ReviewPage.AdvancedClicked += () => NavigateTo(AdvancedPage);
         ReviewPage.StartClicked += () =>
         {
-            StartRequested = true;
+            StartTriggered?.Invoke();
             Close();
         };
         AdvancedPage.BackClicked += () => NavigateTo(ReviewPage);
