@@ -1,3 +1,4 @@
+using System.Threading;
 using KiWin.Core;
 using KiWin.Utilities;
 
@@ -5,13 +6,13 @@ namespace KiWin.Debloat;
 
 public static class DebloatConfigureUpdates
 {
-    public static void Main()
+    public static void Main(CancellationToken cancel = default, Action<string>? outputLine = null)
     {
         const string script = "update_policy_changer.ps1";
         Logger.Info($"Executing PowerShell script: {script}");
         try
         {
-            PowerShellHandler.RunScript(script);
+            PowerShellHandler.RunScript(script, cancel: cancel, outputLine: outputLine);
             Logger.Info($"Successfully executed {script}");
         }
         catch (Exception e)

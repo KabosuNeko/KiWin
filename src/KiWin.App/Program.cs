@@ -162,10 +162,26 @@ public static class Program
                     }
                     var useOverlay = !cli.DeveloperMode;
                     InstallOverlayWindow? overlay = null;
+                    var cancelToken = CancellationToken.None;
+                    Action<string>? logLine = null;
                     if (useOverlay)
                     {
                         overlay = new InstallOverlayWindow();
                         overlay.Show();
+                        logLine = overlay.SetLogLine;
+                        var cts = new CancellationTokenSource();
+                        cancelToken = cts.Token;
+                        overlay.CancelRequested += () =>
+                        {
+                            if (cts.IsCancellationRequested) return;
+                            if (!ErrorDialog.Confirm(
+                                    Localization.T("app.install_overlay.cancel_confirm"),
+                                    Localization.T("app.install_overlay.cancel_title")))
+                                return;
+                            overlay.SetStatus(Localization.T("app.install_overlay.cancelling"));
+                            overlay.SetLogLine(Localization.T("app.install_overlay.cancel_initiated"));
+                            cts.Cancel();
+                        };
                     }
 
                     Task.Run(() =>
@@ -173,7 +189,7 @@ public static class Program
                         try
                         {
                             flowOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
-                                runtimeSelectedBrowserPackage, overlay);
+                                runtimeSelectedBrowserPackage, overlay, cancelToken, logLine);
                             if (overlay is not null)
                             {
                                 Thread.Sleep(2500);
@@ -435,13 +451,17 @@ public static class Program
         string? runtimeConfigPath,
         bool runtimeConfigIsTemp,
         string runtimeSelectedBrowserPackage,
-        InstallOverlayWindow? overlay)
+        InstallOverlayWindow? overlay,
+        CancellationToken cancel = default,
+        Action<string>? logLine = null)
     {
         try
         {
+            cancel.ThrowIfCancellationRequested();
             overlay?.SetStatus("");
             foreach (var (step, enabled) in executionSteps)
             {
+                cancel.ThrowIfCancellationRequested();
                 if (!enabled)
                 {
                     Logger.Info($"Skipping {step.Slug} step (disabled in install_plan)");
@@ -454,6 +474,7 @@ public static class Program
                 }
                 var message = Localization.T(step.MessageKey);
                 overlay?.SetStatus(message);
+                logLine?.Invoke($"==> {message}");
                 if (cli.DryRun)
                 {
                     Logger.Info($"Dry-run: would run {step.Slug} step");
@@ -467,25 +488,40 @@ public static class Program
                     {
                         case DebloatKind.ConfigPath:
                             if (step.Slug == "debloat-windows-phase-one")
-                                DebloatExecuteWinUtil.Main(runtimeConfigPath);
+                                DebloatExecuteWinUtil.Main(runtimeConfigPath, cancel, logLine);
                             else
-                                DebloatExecuteWin11Debloat.Main(runtimeConfigPath);
+                                DebloatExecuteWin11Debloat.Main(runtimeConfigPath, cancel, logLine);
                             break;
                         case DebloatKind.BrowserPackage:
-                            DebloatBrowserInstallation.Main(runtimeSelectedBrowserPackage);
+                            DebloatBrowserInstallation.Main(runtimeSelectedBrowserPackage, cancel, logLine);
                             break;
                         default:
                             if (step.Slug == "remove-edge-permanently")
-                                DebloatRemoveEdge.Main();
+                                DebloatRemoveEdge.Main(cancel, logLine);
                             else if (step.Slug == "configure-updates")
-                                DebloatConfigureUpdates.Main();
+                                DebloatConfigureUpdates.Main(cancel, logLine);
                             else if (step.Slug == "unpin-taskbar-start")
-                                DebloatUnpinTaskbar.Main();
+                                DebloatUnpinTaskbar.Main(cancel, logLine);
                             break;
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                    Logger.Info("Debloat aborted by user.");
+                    logLine?.Invoke(Localization.T("app.install_overlay.cancelled"));
+                    overlay?.SetStatus(Localization.T("app.install_overlay.cancelled"));
+                    overlay?.StopSpinner();
+                    return true;
+                }
                 catch (Exception e)
                 {
+                    if (cancel.IsCancellationRequested)
+                    {
+                        Logger.Info("Debloat aborted by user.");
+                        overlay?.SetStatus(Localization.T("app.install_overlay.cancelled"));
+                        overlay?.StopSpinner();
+                        return true;
+                    }
                     Logger.Exception("Debloat step failed", e);
                     overlay?.StopSpinner();
                     if (!cli.Headless)

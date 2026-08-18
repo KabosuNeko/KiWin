@@ -7,8 +7,8 @@
     },
     "app": {
         "install_overlay": {
-            "title": "KiWin đang cài đặt",
-            "guidance": "Vui lòng không sử dụng bàn phím hoặc chuột. Bạn có thể quan sát KiWin làm việc.",
+            "title": "KiWin đang chạy",
+            "guidance": "Bạn có thể nhấn ESC bất cứ lúc nào để dừng KiWin. Còn không, vui lòng không sử dụng bàn phím hoặc chuột trong khi chạy.",
             "remove_edge": "Đang gỡ Microsoft Edge vĩnh viễn...",
             "browser_installation": "Đang cài trình duyệt bạn đã chọn...",
             "debloat_windows_phase_one": "Đang dọn Windows giai đoạn một (WinUtil)...",
@@ -16,7 +16,12 @@
             "configure_updates": "Đang cấu hình chính sách Windows Update...",
             "unpin_taskbar_start": "Đang gỡ ghim toàn bộ Taskbar và Start...",
             "dry_run_complete": "Hoàn tất chạy thử. Không có thay đổi nào được thực hiện.",
-            "complete_no_restart": "Cài đặt hoàn tất. KiWin sẽ không tự khởi động lại hệ thống."
+            "complete_no_restart": "Cài đặt hoàn tất. KiWin sẽ không tự khởi động lại hệ thống.",
+            "cancel_confirm": "Dừng KiWin ngay bây giờ? Một số thay đổi có thể chưa hoàn tất.",
+            "cancel_title": "Dừng KiWin?",
+            "cancelling": "Đang dừng...",
+            "cancel_initiated": "Đã yêu cầu dừng. Đang kết thúc bước hiện tại và dọn dẹp...",
+            "cancelled": "Đã dừng bởi người dùng. Một số thay đổi có thể chưa hoàn tất."
         }
     },
     "configuration": {

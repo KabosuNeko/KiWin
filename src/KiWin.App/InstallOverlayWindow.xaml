@@ -13,12 +13,12 @@
         Cursor="None"
         Opacity="0.94"
         WindowStartupLocation="CenterScreen">
-    <Border Background="{StaticResource CrustBrush}">
+    <Border Background="{StaticResource CrustBrush}" PreviewKeyDown="Root_PreviewKeyDown">
         <Border Background="{StaticResource CardBrush}"
                 BorderBrush="{StaticResource BorderStrongBrush}"
                 BorderThickness="1" CornerRadius="24"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                MaxWidth="620" Padding="56,44"
+                MaxWidth="920" Padding="56,44"
                 Effect="{StaticResource ShadowLevel3}">
             <StackPanel>
                 <Image x:Name="LogoIcon" Width="44" Height="44"
@@ -27,10 +27,26 @@
                            HorizontalAlignment="Center" Margin="0,22,0,8" />
                 <TextBlock x:Name="GuidanceText" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}"
                            TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
-                           Margin="0,0,0,32" MaxWidth="460" />
-                <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,28" />
+                           Margin="0,0,0,28" MaxWidth="460" />
+                <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,24" />
                 <TextBlock x:Name="StatusText" FontSize="15" HorizontalAlignment="Center"
-                           TextAlignment="Center" TextWrapping="Wrap" />
+                           TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,20" />
+                <ListBox x:Name="LogList" MaxHeight="300" MinHeight="120"
+                         Background="{StaticResource CrustBrush}"
+                         BorderBrush="{StaticResource BorderStrongBrush}"
+                         BorderThickness="1"
+                         FontSize="11" FontFamily="Consolas"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         IsHitTestVisible="False"
+                         Padding="8">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="4,1" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </StackPanel>
         </Border>
     </Border>
