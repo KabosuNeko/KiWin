@@ -1,3 +1,4 @@
+using System.Threading;
 using KiWin.Core;
 using KiWin.Utilities;
 
@@ -5,12 +6,12 @@ namespace KiWin.Debloat;
 
 public static class DebloatExecuteKiWinScripts
 {
-    public static void RunScript(string script)
+    public static void RunScript(string script, CancellationToken cancel = default, Action<string>? outputLine = null)
     {
         Logger.Info($"Executing PowerShell script: {script}");
         try
         {
-            PowerShellHandler.RunScript(script);
+            PowerShellHandler.RunScript(script, cancel: cancel, outputLine: outputLine);
             Logger.Info($"Successfully executed {script}");
         }
         catch (Exception e)
@@ -27,7 +28,9 @@ public static class DebloatExecuteKiWinScripts
         }
     }
 
-    public static void RunEdgeRemoval() => RunScript("edge_vanisher.ps1");
+    public static void RunEdgeRemoval(CancellationToken cancel = default, Action<string>? outputLine = null)
+        => RunScript("edge_vanisher.ps1", cancel, outputLine);
 
-    public static void RunOutlookOneDriveRemoval() => RunScript("uninstall_oo.ps1");
+    public static void RunOutlookOneDriveRemoval(CancellationToken cancel = default, Action<string>? outputLine = null)
+        => RunScript("uninstall_oo.ps1", cancel, outputLine);
 }

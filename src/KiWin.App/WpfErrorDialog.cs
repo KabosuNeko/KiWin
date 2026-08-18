@@ -6,6 +6,25 @@ namespace KiWin.App;
 
 public class WpfErrorDialog : IErrorDialog
 {
+    public bool Confirm(string message, string title)
+    {
+        if (Application.Current is not null &&
+            Application.Current.Dispatcher.Thread != Thread.CurrentThread)
+        {
+            var result = false;
+            Application.Current.Dispatcher.Invoke(() => result = ConfirmCore(message, title));
+            return result;
+        }
+        return ConfirmCore(message, title);
+    }
+
+    private static bool ConfirmCore(string message, string title)
+    {
+        var box = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning,
+            MessageBoxResult.No);
+        return box == MessageBoxResult.Yes;
+    }
+
     public bool Show(string message, bool allowContinue)
     {
         if (Application.Current is not null &&

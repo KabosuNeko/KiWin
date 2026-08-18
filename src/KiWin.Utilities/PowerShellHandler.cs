@@ -41,14 +41,15 @@ public static class PowerShellHandler
         string? terminationStr = null,
         CancellationToken cancel = default,
         bool allowContinueOnFail = false,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        Action<string>? outputLine = null)
     {
         var scriptPath = ResolveScriptPath(script);
         var argLine = $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"";
         if (args is not null)
             argLine += " " + string.Join(" ", args.Select(EscapeArg));
         Logger.Info($"Launching PowerShell: powershell.exe {argLine}");
-        return RunCore(argLine, Path.GetFileName(scriptPath), "PSCRIPT", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout);
+        return RunCore(argLine, Path.GetFileName(scriptPath), "PSCRIPT", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout, outputLine);
     }
 
     public static int RunCommand(
@@ -57,11 +58,12 @@ public static class PowerShellHandler
         string? terminationStr = null,
         CancellationToken cancel = default,
         bool allowContinueOnFail = false,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        Action<string>? outputLine = null)
     {
         var argLine = $"-NoProfile -ExecutionPolicy Bypass -Command {EscapeArg(command)}";
         Logger.Info($"Launching PowerShell command: {command}");
-        return RunCore(argLine, "command", "PCOMMAND", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout);
+        return RunCore(argLine, "command", "PCOMMAND", monitorOutput, terminationStr, cancel, allowContinueOnFail, timeout, outputLine);
     }
 
     private static int RunCore(
@@ -72,7 +74,8 @@ public static class PowerShellHandler
         string? terminationStr,
         CancellationToken cancel,
         bool allowContinueOnFail,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        Action<string>? outputLine = null)
     {
         var psi = new ProcessStartInfo("powershell.exe")
         {
@@ -108,6 +111,7 @@ public static class PowerShellHandler
             if (e.Data is null) return;
             var text = e.Data.TrimEnd();
             Logger.Info($"{prefix} [{label}] STDOUT: {text}");
+            try { outputLine?.Invoke(text); } catch { }
             if (monitorOutput && terminationStr is not null && text.Contains(terminationStr))
             {
                 Logger.Info($"Termination string '{terminationStr}' detected.");
@@ -119,7 +123,9 @@ public static class PowerShellHandler
         void StreamErr(object? s, DataReceivedEventArgs e)
         {
             if (e.Data is null) return;
-            Logger.Error($"{prefix} [{label}] STDERR: {e.Data.TrimEnd()}");
+            var text = e.Data.TrimEnd();
+            Logger.Error($"{prefix} [{label}] STDERR: {text}");
+            try { outputLine?.Invoke(text); } catch { }
         }
 
         proc.OutputDataReceived += StreamOut;

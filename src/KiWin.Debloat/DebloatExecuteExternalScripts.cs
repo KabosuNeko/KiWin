@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Threading;
 using KiWin.Core;
 using KiWin.Utilities;
 
@@ -201,7 +202,7 @@ public static class DebloatExecuteExternalScripts
         return (basePath, userConfig);
     }
 
-    public static void RunWinUtil(string? configPath = null)
+    public static void RunWinUtil(string? configPath = null, CancellationToken cancel = default, Action<string>? outputLine = null)
     {
         var (basePath, userConfig) = PrepareContext(configPath);
         List<string>? winutilConfig = null;
@@ -229,7 +230,7 @@ public static class DebloatExecuteExternalScripts
         try
         {
             PowerShellHandler.RunCommand(cmd, monitorOutput: true, terminationStr: "Tweaks are Finished",
-                timeout: TimeSpan.FromMinutes(25));
+                timeout: TimeSpan.FromMinutes(25), cancel: cancel, outputLine: outputLine);
             Logger.Info("Successfully executed ChrisTitusTech WinUtil");
         }
         catch (Exception e)
@@ -242,7 +243,7 @@ public static class DebloatExecuteExternalScripts
         }
     }
 
-    public static void RunWin11Debloat(string? configPath = null)
+    public static void RunWin11Debloat(string? configPath = null, CancellationToken cancel = default, Action<string>? outputLine = null)
     {
         var (basePath, userConfig) = PrepareContext(configPath);
         List<string>? win11debloatArgs = null;
@@ -276,7 +277,7 @@ public static class DebloatExecuteExternalScripts
         Logger.Info("Executing Raphire Win11Debloat");
         try
         {
-            PowerShellHandler.RunCommand(cmd, timeout: TimeSpan.FromMinutes(15));
+            PowerShellHandler.RunCommand(cmd, timeout: TimeSpan.FromMinutes(15), cancel: cancel, outputLine: outputLine);
             Logger.Info("Successfully executed Raphire Win11Debloat");
         }
         catch (Exception e)

@@ -7,8 +7,8 @@
     },
     "app": {
         "install_overlay": {
-            "title": "KiWin is installing",
-            "guidance": "Please don't use your keyboard or mouse. You can watch as KiWin works.",
+            "title": "KiWin is running",
+            "guidance": "You can press ESC at any time to stop KiWin. Otherwise, please don't use your keyboard or mouse while it works.",
             "remove_edge": "Removing Microsoft Edge permanently...",
             "browser_installation": "Installing your chosen browser...",
             "debloat_windows_phase_one": "Debloating Windows phase one (WinUtil)...",
@@ -16,7 +16,12 @@
             "configure_updates": "Configuring Windows Update policies...",
             "unpin_taskbar_start": "Unpinning all Taskbar and Start pinned items...",
             "dry_run_complete": "Dry run complete. No system changes were made.",
-            "complete_no_restart": "Installation complete. KiWin will not restart your system automatically."
+            "complete_no_restart": "Installation complete. KiWin will not restart your system automatically.",
+            "cancel_confirm": "Stop KiWin now? Some changes may be left unfinished.",
+            "cancel_title": "Stop KiWin?",
+            "cancelling": "Stopping...",
+            "cancel_initiated": "Stop requested. Finishing the current step and cleaning up...",
+            "cancelled": "Stopped by user. Some changes may be incomplete."
         }
     },
     "configuration": {
