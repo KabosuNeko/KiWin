@@ -9,8 +9,6 @@
   <img src="https://img.shields.io/badge/.NET%20Framework-4.8-e0a93b.svg" alt=".NET Framework 4.8" />
 </p>
 
-**Windows without the suck.**
-
 A Windows 11 debloat tool written in **C#/WPF**: one GUI that drives community-reviewed debloat scripts (**WinUtil**, **Win11Debloat**) alongside KiWin's own scripts. Debloat only, no visual or theme changes to Windows.
 
 ## Features
