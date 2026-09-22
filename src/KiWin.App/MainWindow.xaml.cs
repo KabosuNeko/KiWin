@@ -15,9 +15,6 @@ public partial class MainWindow : Window
 
     private const int DwmwaUseImmersiveDarkMode = 20;
 
-    private UserControl? _currentPage;
-    private UserControl? _pageBeforeLanguage;
-
     public event Action? StartTriggered;
 
     private void ApplyAppIcon()
@@ -26,9 +23,7 @@ public partial class MainWindow : Window
         {
             var iconPath = AppPaths.Resolve(@"media\ICON.ico");
             if (!File.Exists(iconPath)) return;
-            var icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
-            Icon = icon;
-            LogoIcon.Source = icon;
+            Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
         }
         catch (Exception e)
         {
@@ -73,8 +68,6 @@ public partial class MainWindow : Window
             Close();
         };
         AdvancedPage.BackClicked += () => NavigateTo(ReviewPage);
-        LanguagePage.BackClicked += () => NavigateTo(_pageBeforeLanguage ?? ReviewPage);
-        LanguagePage.LanguageChanged += () => RefreshAllText();
 
         Loaded += OnLoaded;
     }
@@ -131,31 +124,18 @@ public partial class MainWindow : Window
 
     private void NavigateTo(UserControl page)
     {
-        if (page == LanguagePage)
-            _pageBeforeLanguage = _currentPage;
-        _currentPage = page;
         BrowserPage.Visibility = page == BrowserPage ? Visibility.Visible : Visibility.Collapsed;
         ReviewPage.Visibility = page == ReviewPage ? Visibility.Visible : Visibility.Collapsed;
         AdvancedPage.Visibility = page == AdvancedPage ? Visibility.Visible : Visibility.Collapsed;
-        LanguagePage.Visibility = page == LanguagePage ? Visibility.Visible : Visibility.Collapsed;
         if (page == ReviewPage) ReviewPage.Refresh();
         if (page == AdvancedPage) AdvancedPage.Refresh();
-        if (page == LanguagePage) LanguagePage.Refresh();
     }
 
     private void RefreshAllText()
     {
         Title = "KiWin";
-        TitleBarLanguage.Text = Localization.T("configuration.advanced.language") == "configuration.advanced.language"
-            ? "🌐 Language"
-            : "🌐 " + Localization.T("configuration.advanced.language");
         BrowserPage.Refresh();
         ReviewPage.Refresh();
         AdvancedPage.Refresh();
-    }
-
-    private void TitleBarLanguage_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        NavigateTo(LanguagePage);
     }
 }

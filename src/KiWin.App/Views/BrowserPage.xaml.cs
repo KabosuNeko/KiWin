@@ -24,7 +24,7 @@ public partial class BrowserPage : UserControl
         var list = new List<BrowserItem>();
         foreach (var b in StepCatalog.BrowserOptionsLocalized())
         {
-            var iconFile = Path.Combine(Logger.BasePath(), "media", IconFileFor(b.PackageId));
+            var iconFile = Path.Combine(Logger.BasePath(), "media", b.Icon);
             BitmapImage? icon = null;
             if (File.Exists(iconFile))
                 icon = new BitmapImage(new Uri(iconFile));
@@ -32,16 +32,6 @@ public partial class BrowserPage : UserControl
         }
         BrowserGrid.ItemsSource = list;
     }
-
-    private static string IconFileFor(string packageId) => packageId switch
-    {
-        "Waterfox.Waterfox" => "browser_waterfox.png",
-        "ImputNet.Helium" => "browser_helium.png",
-        "Mozilla.Firefox" => "browser_firefox.png",
-        "Brave.Brave" => "browser_brave.png",
-        "LibreWolf.LibreWolf" => "browser_librewolf.png",
-        _ => "",
-    };
 
     private void BrowserButton_Click(object sender, RoutedEventArgs e)
     {

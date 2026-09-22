@@ -5,4 +5,7 @@
     <Project Path="src/KiWin.Debloat/KiWin.Debloat.csproj" />
     <Project Path="src/KiWin.Utilities/KiWin.Utilities.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KiWin.Core.Tests/KiWin.Core.Tests.csproj" />
+  </Folder>
 </Solution>

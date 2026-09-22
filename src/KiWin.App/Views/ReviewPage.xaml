@@ -16,34 +16,16 @@
                        TextWrapping="Wrap" Margin="0,0,0,14" />
 
             <Border x:Name="NoBrowserChip" Style="{StaticResource WarningChip}" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⚠" FontSize="13" FontWeight="Bold"
-                               Foreground="{StaticResource WarningBrush}" Margin="0,0,10,0"
-                               VerticalAlignment="Center" />
-                    <TextBlock x:Name="NoBrowserWarning" TextWrapping="Wrap"
-                               Foreground="{StaticResource WarningBrush}" FontSize="12.5"
-                               VerticalAlignment="Center" />
-                </StackPanel>
+                <TextBlock x:Name="NoBrowserWarning" TextWrapping="Wrap"
+                           Foreground="{StaticResource WarningBrush}" FontSize="12.5" />
             </Border>
             <Border x:Name="NoInternetChip" Style="{StaticResource WarningChip}" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⚠" FontSize="13" FontWeight="Bold"
-                               Foreground="{StaticResource WarningBrush}" Margin="0,0,10,0"
-                               VerticalAlignment="Center" />
-                    <TextBlock x:Name="NoInternetInfo" TextWrapping="Wrap"
-                               Foreground="{StaticResource WarningBrush}" FontSize="12.5"
-                               VerticalAlignment="Center" />
-                </StackPanel>
+                <TextBlock x:Name="NoInternetInfo" TextWrapping="Wrap"
+                           Foreground="{StaticResource WarningBrush}" FontSize="12.5" />
             </Border>
             <Border x:Name="NoUpdatesChip" Style="{StaticResource WarningChip}" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⚠" FontSize="13" FontWeight="Bold"
-                               Foreground="{StaticResource WarningBrush}" Margin="0,0,10,0"
-                               VerticalAlignment="Center" />
-                    <TextBlock x:Name="NoUpdatesWarning" TextWrapping="Wrap"
-                               Foreground="{StaticResource WarningBrush}" FontSize="12.5"
-                               VerticalAlignment="Center" />
-                </StackPanel>
+                <TextBlock x:Name="NoUpdatesWarning" TextWrapping="Wrap"
+                           Foreground="{StaticResource WarningBrush}" FontSize="12.5" />
             </Border>
             <TextBlock x:Name="EmptyText" Style="{StaticResource MutedText}" TextWrapping="Wrap"
                        Margin="0,0,0,8" Visibility="Collapsed" />

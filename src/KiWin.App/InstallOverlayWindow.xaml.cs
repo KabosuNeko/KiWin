@@ -61,6 +61,20 @@ public partial class InstallOverlayWindow : Window
         Dispatcher.Invoke(() => Spinner.Stop());
     }
 
+    public void SetProgress(int current, int total)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            Progress.Maximum = total < 1 ? 1 : total;
+            Progress.Value = current;
+        });
+    }
+
+    public void AllowDialogOnTop()
+    {
+        try { Dispatcher.Invoke(() => Topmost = false); } catch { }
+    }
+
     private void Root_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape)

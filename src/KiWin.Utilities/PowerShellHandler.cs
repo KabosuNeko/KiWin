@@ -96,7 +96,7 @@ public static class PowerShellHandler
         catch (Exception e)
         {
             Logger.Exception($"Failed to start PowerShell process", e);
-            if (!ErrorDialog.Show(Localization_T("errors.powershell_script_launch_failed", new() { ["error"] = e.Message }), allowContinueOnFail))
+            if (!ErrorDialog.Show(KiWin.Core.Localization.TOrKey("errors.powershell_script_launch_failed", new() { ["error"] = e.Message }), allowContinueOnFail))
                 throw new InvalidOperationException("PowerShell launch aborted.", e);
             throw;
         }
@@ -177,8 +177,8 @@ public static class PowerShellHandler
         {
             Logger.Error($"PowerShell exited with code {rc}");
             var message = prefix == "PSCRIPT"
-                ? Localization_T("errors.powershell_script_failed", new() { ["script_name"] = label, ["exit_code"] = rc })
-                : Localization_T("errors.powershell_command_failed", new() { ["exit_code"] = rc });
+                ? KiWin.Core.Localization.TOrKey("errors.powershell_script_failed", new() { ["script_name"] = label, ["exit_code"] = rc })
+                : KiWin.Core.Localization.TOrKey("errors.powershell_command_failed", new() { ["exit_code"] = rc });
             if (!ErrorDialog.Show(message, allowContinueOnFail))
                 throw new InvalidOperationException($"PowerShell failed (code {rc})");
         }
@@ -192,7 +192,7 @@ public static class PowerShellHandler
     private static string EscapeArg(string value) =>
         "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
 
-    private static void KillProcessTree(Process process)
+    public static void KillProcessTree(Process process)
     {
         try
         {
@@ -210,15 +210,4 @@ public static class PowerShellHandler
         }
     }
 
-    private static string Localization_T(string key, Dictionary<string, object?>? parameters = null)
-    {
-        try
-        {
-            return KiWin.Core.Localization.T(key, parameters);
-        }
-        catch
-        {
-            return key;
-        }
-    }
 }

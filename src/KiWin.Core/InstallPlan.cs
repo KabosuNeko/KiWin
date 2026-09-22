@@ -12,10 +12,25 @@ public static class InstallPlan
 {
     public const int InstallPlanVersion = 1;
 
-    public static string KiWinDir()
+    public static string KiWinDir() => AppPaths.DataRoot();
+
+    private static string LegacyKiWinDir() => Path.Combine(Path.GetTempPath(), "kiwin");
+
+    private static void MigrateLegacyPlanFile()
     {
-        var temp = Path.GetTempPath();
-        return Path.Combine(temp, "kiwin");
+        try
+        {
+            var legacy = Path.Combine(LegacyKiWinDir(), "install_plan.json");
+            var target = InstallPlanPath();
+            if (File.Exists(legacy) && !File.Exists(target))
+            {
+                Directory.CreateDirectory(KiWinDir());
+                File.Copy(legacy, target);
+            }
+        }
+        catch
+        {
+        }
     }
 
     public static string InstallPlanPath() => Path.Combine(KiWinDir(), "install_plan.json");
@@ -255,6 +270,7 @@ public static class InstallPlan
 
     public static void EnsureInstallPlanFile()
     {
+        MigrateLegacyPlanFile();
         Directory.CreateDirectory(KiWinDir());
         var path = InstallPlanPath();
         if (!File.Exists(path))
@@ -409,40 +425,6 @@ public static class InstallPlan
             keys.Add(key);
         }
         return keys;
-    }
-
-    public static List<VisibleItem> VisibleEnabledItems(JsonObject data)
-    {
-        var outList = new List<VisibleItem>();
-        var knownKeys = new HashSet<string>(StepCatalog.BoolOptionSlugs.Concat(StepCatalog.StepSlugs));
-        foreach (var item in data["items"]?.AsArray() ?? new JsonArray())
-        {
-            var n = NormalizeItem(item);
-            if (!n.GetBool("enabled")) continue;
-            var key = n.GetString("key");
-            if (key == "browser-installation" && string.IsNullOrEmpty(data.GetString("selected_browser_package"))) continue;
-            string text, tooltip;
-            if (knownKeys.Contains(key))
-            {
-                if (key == "browser-installation")
-                {
-                    text = StepCatalog.BrowserStepText(data.GetString("selected_browser_name", "None"));
-                    tooltip = StepCatalog.BrowserTooltip(data.GetString("selected_browser_package"));
-                }
-                else
-                {
-                    text = StepCatalog.StepText(key);
-                    tooltip = StepCatalog.StepTooltip(key);
-                }
-            }
-            else
-            {
-                text = n.GetString("text");
-                tooltip = n.GetString("tooltip");
-            }
-            outList.Add(new VisibleItem(key, text, tooltip));
-        }
-        return outList;
     }
 
     public static List<VisibleItem> VisibleAllItems(JsonObject data)

@@ -30,7 +30,4 @@ public static class DebloatExecuteKiWinScripts
 
     public static void RunEdgeRemoval(CancellationToken cancel = default, Action<string>? outputLine = null)
         => RunScript("edge_vanisher.ps1", cancel, outputLine);
-
-    public static void RunOutlookOneDriveRemoval(CancellationToken cancel = default, Action<string>? outputLine = null)
-        => RunScript("uninstall_oo.ps1", cancel, outputLine);
 }
