@@ -79,7 +79,12 @@ powershell -ExecutionPolicy Bypass -File build.ps1
 powershell -ExecutionPolicy Bypass -File build.ps1 -Force
 ```
 
-`build.ps1` tải `winutil.ps1` và Win11Debloat (tag `2026.08.24`) vào `external_scripts\`, tắt bước cài Windows feature của WinUtil, rồi nhúng assets, scripts, presets và locales vào một file `dist\KiWin.exe` duy nhất. Patch được kiểm chứng lúc build: nếu upstream WinUtil đổi khiến target không còn khớp đúng một lần, build **fail** thay vì ship script chưa patch. Nguồn tải được ghi vào `external_scripts\versions.json` kèm SHA256; nếu đã có thì bỏ qua tải (`-Force` để làm mới). Muốn ký số, đặt `KIWIN_SIGN_THUMBPRINT` trước khi build.
+`build.ps1` tải `winutil.ps1` và Win11Debloat (tag `2026.08.24`) vào `external_scripts\`, tắt bước cài Windows feature của WinUtil, rồi nhúng assets, scripts, presets và locales vào một file `dist\KiWin.exe` duy nhất. Patch được kiểm chứng lúc build: nếu upstream WinUtil đổi khiến target không còn khớp đúng một lần, build **fail** thay vì ship script chưa patch. Nguồn tải được ghi vào `external_scripts\versions.json` kèm SHA256; nếu đã có thì bỏ qua tải (`-Force` để làm mới).
+
+Ký số (cần chứng thư, không có thì SmartScreen vẫn cảnh báo):
+- Cert trong Windows store: đặt `KIWIN_SIGN_THUMBPRINT`.
+- File PFX: đặt `KIWIN_SIGN_PFX` (PFX mã hoá base64) và `KIWIN_SIGN_PFX_PASSWORD`.
+- Trên CI, thêm hai secret cùng tên `KIWIN_SIGN_PFX` và `KIWIN_SIGN_PFX_PASSWORD`; release sẽ tự ký. Không có thì build vẫn chạy nhưng cảnh báo chưa ký.
 
 ## Credits
 

@@ -103,17 +103,35 @@ if (Test-Path $configFile) {
 }
 
 $exePath = Join-Path $outDir "KiWin.exe"
+$pfx = $env:KIWIN_SIGN_PFX
+$pfxPassword = $env:KIWIN_SIGN_PFX_PASSWORD
 $thumb = $env:KIWIN_SIGN_THUMBPRINT
-if ($thumb) {
-    Write-Host "Signing $exePath ..."
+
+if ($pfx -or $thumb) {
     $signtool = (Get-Command signtool.exe -ErrorAction SilentlyContinue).Source
-    if (-not $signtool) { throw "KIWIN_SIGN_THUMBPRINT is set but signtool.exe was not found on PATH." }
-    & $signtool sign /sha1 $thumb /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 $exePath
-    if ($LASTEXITCODE -ne 0) { throw "signtool failed with exit code $LASTEXITCODE" }
+    if (-not $signtool) { throw "Signing was requested but signtool.exe was not found on PATH (install the Windows SDK)." }
+    $timestamp = "http://timestamp.digicert.com"
+    if ($pfx) {
+        Write-Host "Signing $exePath with PFX..."
+        $pfxPath = Join-Path $env:TEMP ("kiwin_sign_" + [Guid]::NewGuid().ToString("N") + ".pfx")
+        [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($pfx))
+        try {
+            & $signtool sign /f $pfxPath /p $pfxPassword /fd SHA256 /tr $timestamp /td SHA256 $exePath
+            if ($LASTEXITCODE -ne 0) { throw "signtool failed with exit code $LASTEXITCODE" }
+        }
+        finally {
+            Remove-Item -LiteralPath $pfxPath -Force -ErrorAction SilentlyContinue
+        }
+    }
+    else {
+        Write-Host "Signing $exePath with certificate $thumb ..."
+        & $signtool sign /sha1 $thumb /fd SHA256 /tr $timestamp /td SHA256 $exePath
+        if ($LASTEXITCODE -ne 0) { throw "signtool failed with exit code $LASTEXITCODE" }
+    }
     Write-Host "Signed KiWin.exe."
 }
 else {
-    Write-Warning "KiWin.exe is NOT code-signed. Set KIWIN_SIGN_THUMBPRINT to a certificate thumbprint to sign releases (removes SmartScreen friction)."
+    Write-Warning "KiWin.exe is NOT code-signed. Set KIWIN_SIGN_PFX (+ KIWIN_SIGN_PFX_PASSWORD) or KIWIN_SIGN_THUMBPRINT to sign releases (removes SmartScreen friction)."
 }
 
 Write-Host ""
