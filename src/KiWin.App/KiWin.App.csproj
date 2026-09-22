@@ -11,7 +11,7 @@
     <RootNamespace>KiWin.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <StartupObject>KiWin.App.Program</StartupObject>
-    <Version>1.0.0.0</Version>
+    <Version>1.1.2</Version>
     <Product>KiWin</Product>
     <Company>KiWin</Company>
     <Description>Simple utility to debloat Windows in 2 clicks.</Description>
@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="all" />
     <PackageReference Include="Costura.Fody" Version="6.2.0" PrivateAssets="all" />
     <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

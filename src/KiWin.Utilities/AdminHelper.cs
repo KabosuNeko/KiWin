@@ -44,7 +44,7 @@ public static class AdminHelper
         {
             var err = Marshal.GetLastWin32Error();
             Logger.Exception("Failed to relaunch with admin privileges", new System.ComponentModel.Win32Exception(err));
-            ErrorDialog.Show(Localization_T("errors.admin_elevation_failed", new() { ["error"] = $"Win32 error {err}" }), false);
+            ErrorDialog.Show(KiWin.Core.Localization.TOrKey("errors.admin_elevation_failed", new() { ["error"] = $"Win32 error {err}" }), false);
             Environment.Exit(1);
         }
     }
@@ -61,15 +61,4 @@ public static class AdminHelper
         return true;
     }
 
-    private static string Localization_T(string key, Dictionary<string, object?>? parameters = null)
-    {
-        try
-        {
-            return KiWin.Core.Localization.T(key, parameters);
-        }
-        catch
-        {
-            return key;
-        }
-    }
 }

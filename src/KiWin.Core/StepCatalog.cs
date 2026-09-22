@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using KiWin.Core;
 
 namespace KiWin.Core;
@@ -7,33 +8,34 @@ public static class StepCatalog
 {
     public static readonly BrowserOption[] BrowserOptions =
     {
-        new("Waterfox", "../../media/browser_waterfox.png", "Waterfox.Waterfox", "browsers.waterfox.tooltip"),
-        new("Helium", "../../media/browser_helium.png", "ImputNet.Helium", "browsers.helium.tooltip"),
-        new("Firefox", "../../media/browser_firefox.png", "Mozilla.Firefox", "browsers.firefox.tooltip"),
-        new("Brave", "../../media/browser_brave.png", "Brave.Brave", "browsers.brave.tooltip"),
-        new("LibreWolf", "../../media/browser_librewolf.png", "LibreWolf.LibreWolf", "browsers.librewolf.tooltip"),
+        new("Waterfox", "browser_waterfox.png", "Waterfox.Waterfox", "browsers.waterfox.tooltip"),
+        new("Helium", "browser_helium.png", "ImputNet.Helium", "browsers.helium.tooltip"),
+        new("Firefox", "browser_firefox.png", "Mozilla.Firefox", "browsers.firefox.tooltip"),
+        new("Brave", "browser_brave.png", "Brave.Brave", "browsers.brave.tooltip"),
+        new("LibreWolf", "browser_librewolf.png", "LibreWolf.LibreWolf", "browsers.librewolf.tooltip"),
     };
 
     public static readonly Dictionary<string, string> BrowserTooltipKeys =
         BrowserOptions.ToDictionary(b => b.PackageId, b => b.TooltipKey);
 
-    public static readonly string[] StepSlugs =
+    public static readonly DebloatStepInfo[] DebloatSteps =
     {
-        "remove-edge-permanently",
-        "browser-installation",
-        "debloat-windows-phase-one",
-        "debloat-windows-phase-two",
-        "configure-updates",
-        "unpin-taskbar-start",
+        new("remove-edge-permanently", "app.install_overlay.remove_edge", DebloatKind.None),
+        new("browser-installation", "app.install_overlay.browser_installation", DebloatKind.BrowserPackage),
+        new("debloat-windows-phase-one", "app.install_overlay.debloat_windows_phase_one", DebloatKind.ConfigPath),
+        new("debloat-windows-phase-two", "app.install_overlay.debloat_windows_phase_two", DebloatKind.ConfigPath),
+        new("configure-updates", "app.install_overlay.configure_updates", DebloatKind.None),
+        new("unpin-taskbar-start", "app.install_overlay.unpin_taskbar_start", DebloatKind.None),
     };
+
+    public static readonly string[] StepSlugs = DebloatSteps.Select(s => s.Slug).ToArray();
 
     public static readonly string[] BoolOptionSlugs =
         { "developer-mode", "prevent-device-companion-apps", "wpbt", "remove-onedrive", "remove-apps", "remove-gaming-apps" };
 
     public const string StandardPresetKey = "standard";
 
-    public static bool DefaultBoolOptionEnabled(string slug) =>
-        slug is "prevent-device-companion-apps" or "wpbt" or "remove-onedrive" or "remove-apps" or "remove-gaming-apps";
+    public static bool DefaultBoolOptionEnabled(string slug) => slug is not "developer-mode";
 
     public static readonly Dictionary<string, StepPresentation> StepPresentation = new()
     {
@@ -216,6 +218,21 @@ public static class StepCatalog
 
     public static string DefaultWin11DebloatArgsText() => string.Join(" ", DefaultWin11DebloatArgs);
 
+    private static readonly Regex SafeWin11DebloatArg = new("^-[A-Za-z][A-Za-z0-9]*$", RegexOptions.Compiled);
+
+    public static List<string> FilterWin11DebloatArgs(IEnumerable<string> args, Action<string>? onDropped = null)
+    {
+        var kept = new List<string>();
+        foreach (var raw in args)
+        {
+            var arg = (raw ?? "").Trim();
+            if (arg.Length == 0) continue;
+            if (SafeWin11DebloatArg.IsMatch(arg)) kept.Add(arg);
+            else onDropped?.Invoke(arg);
+        }
+        return kept;
+    }
+
     public static string BrowserTooltip(string packageId) =>
         Localization.T(BrowserTooltipKeys.GetValueOrDefault(packageId, "steps.browser_installation.tooltip"));
 
@@ -258,3 +275,12 @@ public record BrowserOptionData(string Name, string Icon, string PackageId, stri
 public record PresetInfo(string Key, string Name, JsonObject Plan);
 public record PresetOption(string Key, string Name);
 public record StepPresentation(string TextKey, string TooltipKey);
+
+public enum DebloatKind
+{
+    None,
+    ConfigPath,
+    BrowserPackage,
+}
+
+public record DebloatStepInfo(string Slug, string MessageKey, DebloatKind Kind);

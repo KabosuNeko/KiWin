@@ -15,6 +15,7 @@
             "debloat_windows_phase_two": "Debloating Windows phase two (Win11Debloat)...",
             "configure_updates": "Configuring Windows Update policies...",
             "unpin_taskbar_start": "Unpinning all Taskbar and Start pinned items...",
+            "creating_restore_point": "Creating a System Restore point...",
             "dry_run_complete": "Dry run complete. No system changes were made.",
             "complete_no_restart": "Installation complete. KiWin will not restart your system automatically.",
             "cancel_confirm": "Stop KiWin now? Some changes may be left unfinished.",
@@ -122,10 +123,10 @@
     },
     "browsers": {
         "helium": {
-            "tooltip": "Helium is a recommended browser—often compared to Brave, but acts more like LibreWolf for Chromium. It offers out-of-the-box privacy and uBlock Origin support without the bloat, though it lacks Sync and DRM."
+            "tooltip": "Helium is a recommended browser, often compared to Brave, but acts more like LibreWolf for Chromium. It offers out-of-the-box privacy and uBlock Origin support without the bloat, though it lacks Sync and DRM."
         },
         "firefox": {
-            "tooltip": "Firefox is not recommended out of the box, but with proper configuration, it is one of the best browsers—benefiting from rapid zero-day patches directly from Mozilla. Check out my custom setup: https://github.com/KabosuNeko/YuzuFox"
+            "tooltip": "Firefox is not recommended out of the box, but with proper configuration, it is one of the best browsers, benefiting from rapid zero-day patches directly from Mozilla. Check out my custom setup: https://github.com/KabosuNeko/YuzuFox"
         },
         "waterfox": {
             "tooltip": "Waterfox is recommended over Firefox out of the box as telemetry and tracking are pre-removed. However, zero-day patches are often delayed compared to upstream Firefox."

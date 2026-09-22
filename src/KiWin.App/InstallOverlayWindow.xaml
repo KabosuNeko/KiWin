@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:KiWin.App.Controls"
         Title="KiWin"
+        Style="{StaticResource AppWindow}"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowState="Maximized"
@@ -11,31 +12,34 @@
         AllowsTransparency="True"
         Background="Transparent"
         Cursor="None"
-        Opacity="0.94"
+        Opacity="0.96"
         WindowStartupLocation="CenterScreen">
     <Border Background="{StaticResource CrustBrush}" PreviewKeyDown="Root_PreviewKeyDown">
         <Border Background="{StaticResource CardBrush}"
                 BorderBrush="{StaticResource BorderStrongBrush}"
-                BorderThickness="1" CornerRadius="24"
+                BorderThickness="1" CornerRadius="18"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                MaxWidth="920" Padding="56,44"
-                Effect="{StaticResource ShadowLevel3}">
+                MaxWidth="880" Padding="52,40"
+                Effect="{StaticResource OverlayShadow}">
             <StackPanel>
-                <Image x:Name="LogoIcon" Width="44" Height="44"
-                           Stretch="Uniform" HorizontalAlignment="Center" />
-                <TextBlock x:Name="TitleText" FontSize="30" FontWeight="SemiBold"
-                           HorizontalAlignment="Center" Margin="0,22,0,8" />
-                <TextBlock x:Name="GuidanceText" FontSize="14" Foreground="{StaticResource SecondaryTextBrush}"
+                <Image x:Name="LogoIcon" Width="40" Height="40"
+                       Stretch="Uniform" HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality" />
+                <TextBlock x:Name="TitleText" FontSize="28" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,20,0,8" />
+                <TextBlock x:Name="GuidanceText" FontSize="13.5" Foreground="{StaticResource SecondaryTextBrush}"
                            TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
-                           Margin="0,0,0,28" MaxWidth="460" />
-                <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,24" />
+                           Margin="0,0,0,26" MaxWidth="460" />
+                <controls:SpinnerControl x:Name="Spinner" HorizontalAlignment="Center" Margin="0,0,0,22" />
                 <TextBlock x:Name="StatusText" FontSize="15" HorizontalAlignment="Center"
-                           TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,20" />
+                           TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,12" />
+                <ProgressBar x:Name="Progress" Height="4" Maximum="1" Value="0"
+                             MaxWidth="460" Margin="0,0,0,18" />
                 <ListBox x:Name="LogList" MaxHeight="300" MinHeight="120"
                          Background="{StaticResource CrustBrush}"
                          BorderBrush="{StaticResource BorderStrongBrush}"
                          BorderThickness="1"
-                         FontSize="11" FontFamily="Consolas"
+                         FontSize="11" FontFamily="Cascadia Mono, Consolas, Courier New"
                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                          IsHitTestVisible="False"
@@ -44,6 +48,14 @@
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Padding" Value="4,1" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>

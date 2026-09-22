@@ -11,7 +11,7 @@ public static class DebloatExecuteExternalScripts
 {
     public static string BasePath() => Logger.BasePath();
 
-    private static bool IsUrl(string value)
+    public static bool IsUrl(string value)
     {
         try
         {
@@ -254,6 +254,7 @@ public static class DebloatExecuteExternalScripts
                 Logger.Info("Custom config has no Win11Debloat args; using embedded default Win11Debloat args.");
         }
         win11debloatArgs ??= StepCatalog.DefaultWin11DebloatArgsList();
+        win11debloatArgs = StepCatalog.FilterWin11DebloatArgs(win11debloatArgs, a => Logger.Warning($"Ignoring unsafe Win11Debloat argument: {a}"));
 
         var candidates = Directory.Exists(Path.Combine(basePath, "external_scripts"))
             ? Directory.GetDirectories(Path.Combine(basePath, "external_scripts"), "Raphire-Win11Debloat-*")
@@ -288,12 +289,5 @@ public static class DebloatExecuteExternalScripts
                 false);
             throw;
         }
-    }
-
-    public static void Main(string? configPath = null)
-    {
-        RunWinUtil(configPath);
-        RunWin11Debloat(configPath);
-        Logger.Info("All external debloat scripts executed successfully.");
     }
 }

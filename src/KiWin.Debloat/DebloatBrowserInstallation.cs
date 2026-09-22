@@ -228,37 +228,19 @@ public static class DebloatBrowserInstallation
             if (cancel.IsCancellationRequested)
             {
                 Logger.Warning("Killing winget due to user cancellation.");
-                try { KillProcessTree(proc); } catch { }
+                try { PowerShellHandler.KillProcessTree(proc); } catch { }
                 throw new OperationCanceledException();
             }
             if (sw.Elapsed > WingetTimeout)
             {
                 timedOut = true;
                 Logger.Warning($"Killing winget due to timeout ({WingetTimeout}).");
-                try { KillProcessTree(proc); } catch { }
+                try { PowerShellHandler.KillProcessTree(proc); } catch { }
             }
         }
         proc.WaitForExit();
         if (timedOut)
             throw new InvalidOperationException($"winget timed out after {WingetTimeout}");
         return (proc.ExitCode, stdout.ToString(), stderr.ToString());
-    }
-
-    private static void KillProcessTree(Process process)
-    {
-        try
-        {
-            var startInfo = new ProcessStartInfo("taskkill", $"/F /T /PID {process.Id}")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            };
-            using var killer = Process.Start(startInfo);
-            killer?.WaitForExit(5000);
-        }
-        catch
-        {
-            try { process.Kill(); } catch { }
-        }
     }
 }

@@ -6,10 +6,7 @@ public class Localization
 {
     public const string DefaultLanguage = "en";
 
-    private static string _currentLanguage = DefaultLanguage;
-    private static readonly Dictionary<string, JsonObject> Cache = new();
-
-    public static string CurrentLanguage => _currentLanguage;
+    private static JsonObject? _catalog;
 
     public static string? LocalesDir()
     {
@@ -31,7 +28,7 @@ public class Localization
         return list.Select(Path.GetFullPath).ToList();
     }
 
-    private static JsonNode? _deepGet(JsonNode? data, string dottedKey)
+    private static JsonNode? DeepGet(JsonNode? data, string dottedKey)
     {
         JsonNode? value = data;
         foreach (var part in dottedKey.Split('.'))
@@ -42,70 +39,36 @@ public class Localization
         return value;
     }
 
-    private static JsonObject _loadCatalog(string language)
+    private static JsonObject LoadCatalog()
     {
-        language = string.IsNullOrEmpty(language) ? DefaultLanguage : language;
-        if (Cache.TryGetValue(language, out var cached)) return cached;
-        var path = Path.Combine(LocalesDir() ?? ".", $"{language}.json");
-        JsonObject catalog;
+        if (_catalog is not null) return _catalog;
+        var path = Path.Combine(LocalesDir() ?? ".", $"{DefaultLanguage}.json");
         try
         {
             var text = File.ReadAllText(path, System.Text.Encoding.UTF8);
-            catalog = JsonNode.Parse(text) as JsonObject ?? new JsonObject();
+            _catalog = JsonNode.Parse(text) as JsonObject ?? new JsonObject();
         }
         catch
         {
-            catalog = new JsonObject();
+            _catalog = new JsonObject();
         }
-        Cache[language] = catalog;
-        return catalog;
-    }
-
-    public static List<LanguageInfo> AvailableLanguages()
-    {
-        var outList = new List<LanguageInfo>();
-        var root = LocalesDir();
-        if (root == null || !Directory.Exists(root)) return outList;
-        var names = Directory.GetFiles(root, "*.json")
-            .Select(Path.GetFileNameWithoutExtension)
-            .OrderBy(name => name != $"{DefaultLanguage}.json")
-            .ThenBy(name => name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-        foreach (var code in names)
-        {
-            var catalog = _loadCatalog(code!);
-            var meta = catalog["meta"] as JsonObject;
-            outList.Add(new LanguageInfo(
-                Code: code!,
-                NativeName: meta?.GetString("native_name", code!) ?? code!,
-                EnglishName: meta?.GetString("english_name", code!) ?? code!,
-                Direction: meta?.GetString("direction", "ltr") ?? "ltr"));
-        }
-        return outList;
-    }
-
-    public static bool SetLanguage(string language)
-    {
-        language = string.IsNullOrEmpty(language) ? DefaultLanguage : language;
-        var path = Path.Combine(LocalesDir() ?? ".", $"{language}.json");
-        if (!File.Exists(path)) return false;
-        _currentLanguage = language;
-        _loadCatalog(language);
-        return true;
+        return _catalog;
     }
 
     public static string T(string key, Dictionary<string, object?>? parameters = null)
     {
         key ??= "";
         parameters ??= new();
-        var value = _deepGet(_loadCatalog(_currentLanguage), key);
-        if (value is null && _currentLanguage != DefaultLanguage)
-            value = _deepGet(_loadCatalog(DefaultLanguage), key);
+        var value = DeepGet(LoadCatalog(), key);
         if (value is null) return key;
-        string? text = value is JsonValue jv && jv.TryGetValue<string>(out var str) ? str : null;
+        var text = value is JsonValue jv && jv.TryGetValue<string>(out var str) ? str : null;
         if (text is null) return value.ToString() ?? key;
-        var result = ReplacePlaceholders(text, parameters);
-        return result;
+        return ReplacePlaceholders(text, parameters);
+    }
+
+    public static string TOrKey(string key, Dictionary<string, object?>? parameters = null)
+    {
+        try { return T(key, parameters); } catch { return key; }
     }
 
     private static string ReplacePlaceholders(string text, Dictionary<string, object?> parameters)
@@ -118,5 +81,3 @@ public class Localization
         return regex.IsMatch(replaced) ? text : replaced;
     }
 }
-
-public record LanguageInfo(string Code, string NativeName, string EnglishName, string Direction);
