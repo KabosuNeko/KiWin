@@ -11,36 +11,36 @@
 
 **Windows without the suck.**
 
-Công cụ debloat Windows 11 viết bằng **C#/WPF**: một GUI duy nhất điều phối các script debloat đã được cộng đồng kiểm chứng (**WinUtil**, **Win11Debloat**) cùng script riêng của KiWin. Chỉ debloat, không đổi giao diện hay theme của Windows.
+A Windows 11 debloat tool written in **C#/WPF**: one GUI that drives community-reviewed debloat scripts (**WinUtil**, **Win11Debloat**) alongside KiWin's own scripts. Debloat only, no visual or theme changes to Windows.
 
-## Tính năng
+## Features
 
-- **6 bước debloat** (bật/tắt từng bước trong Advanced):
-  1. Gỡ Microsoft Edge vĩnh viễn
-  2. Cài trình duyệt bạn chọn (qua **winget**)
-  3. Debloat giai đoạn 1: **WinUtil** (Chris Titus Tech)
-  4. Debloat giai đoạn 2: **Win11Debloat** (Raphire)
-  5. Đặt Windows Update về chỉ cập nhật bảo mật (hoàn tác bằng `undo-update-policy=true`)
-  6. Gỡ ghim toàn bộ Taskbar và Start
-- **Tuỳ chọn** (Advanced, mặc định bật): chặn Device Companion Apps, chặn WPBT, gỡ OneDrive, gỡ ứng dụng cài sẵn, gỡ ứng dụng Xbox/game
-- **Trình duyệt**: Waterfox, Helium, Firefox, Brave, LibreWolf
-- **Preset**: Standard / Minimal, kèm nhập và xuất install plan JSON
-- **An toàn**: tạo System Restore point trước khi chạy (best effort); validate tham số Win11Debloat, nên plan JSON nhập từ ngoài không chèn được lệnh
+- **6 debloat steps** (toggle each in Advanced):
+  1. Remove Microsoft Edge permanently
+  2. Install your chosen browser (via **winget**)
+  3. Debloat phase 1: **WinUtil** (Chris Titus Tech)
+  4. Debloat phase 2: **Win11Debloat** (Raphire)
+  5. Set Windows Update to security-only (undo with `undo-update-policy=true`)
+  6. Unpin all Taskbar and Start items
+- **Options** (Advanced, on by default): block Device Companion Apps, block WPBT, remove OneDrive, remove preinstalled apps, remove Xbox/gaming apps
+- **Browsers**: Waterfox, Helium, Firefox, Brave, LibreWolf
+- **Presets**: Standard / Minimal, plus install-plan JSON import and export
+- **Safety**: creates a System Restore point before running (best effort); validates Win11Debloat arguments so an imported plan cannot inject commands
 - **CLI**: `headless`, `dry-run`, `config`, `skip-<step>-step`, `undo-update-policy`
 
-## Yêu cầu
+## Requirements
 
 - Windows 11
-- Quyền **Administrator** (UAC khi chạy)
-- Internet (cài trình duyệt, tải script)
+- **Administrator** rights (UAC prompt on launch)
+- Internet (browser install, script downloads)
 
-Defender: để nguyên. KiWin chỉ đụng đúng những gì bạn chọn trong plan.
+Defender: leave it on. KiWin only touches what you pick in the plan.
 
-## Cài đặt
+## Install
 
-Tải **KiWin.exe** mới nhất từ [Releases](https://github.com/KabosuNeko/KiWin/releases) rồi chạy. Nếu SmartScreen cảnh báo do file chưa ký, chọn *More info → Run anyway*. Lần chạy đầu, app tự giải nén bundle vào `%LOCALAPPDATA%\KiWin` và tự thoát khi debloat xong.
+Download the latest **KiWin.exe** from [Releases](https://github.com/KabosuNeko/KiWin/releases) and run it. If SmartScreen warns because the file is unsigned, choose *More info → Run anyway*. On first run the app extracts its bundle to `%LOCALAPPDATA%\KiWin` and exits when the debloat finishes.
 
-## Cách dùng
+## Usage
 
 ```bash
 KiWin.exe headless=true dry-run=true
@@ -50,26 +50,26 @@ KiWin.exe skip-configure-updates-step=true
 KiWin.exe undo-update-policy=true
 ```
 
-| Flag | Kiểu | Mô tả |
-|------|------|-------|
-| `headless` | bool | Chạy không GUI |
-| `dry-run` | bool | Chỉ xem trước, không đổi hệ thống |
-| `config` | path/URL | Dùng plan JSON có sẵn (đường dẫn hoặc URL) |
-| `developer-mode` | bool | Ẩn overlay cài đặt |
-| `undo-update-policy` | bool | Gỡ chính sách chỉ cập nhật bảo mật |
-| `skip-<step>-step` | bool | Bỏ qua một bước (vd `skip-configure-updates-step`) |
+| Flag | Type | Description |
+|------|------|-------------|
+| `headless` | bool | Run without the GUI |
+| `dry-run` | bool | Preview only, no system changes |
+| `config` | path/URL | Use an existing plan JSON from a path or URL |
+| `developer-mode` | bool | Hide the install overlay |
+| `undo-update-policy` | bool | Remove the security-only update policy |
+| `skip-<step>-step` | bool | Skip a step (e.g. `skip-configure-updates-step`) |
 
 ## Data
 
-| Gì | Ở đâu |
-|----|-------|
-| Bundle đã giải nén + script | `%LOCALAPPDATA%\KiWin\appdata` |
+| What | Where |
+|------|-------|
+| Extracted bundle and scripts | `%LOCALAPPDATA%\KiWin\appdata` |
 | Install plan | `%LOCALAPPDATA%\KiWin\install_plan.json` |
 | Log | `%LOCALAPPDATA%\KiWin\appdata\kiwin.log` |
 
-## Build từ source
+## Build from source
 
-Cần [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) để build (app target **.NET Framework 4.8**, có sẵn trên Windows). Repo dùng định dạng `.slnx`.
+Requires the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) to build (the app targets **.NET Framework 4.8**, preinstalled on Windows). The repo uses the `.slnx` solution format.
 
 ```bash
 dotnet build KiWin.slnx -c Debug
@@ -79,18 +79,18 @@ powershell -ExecutionPolicy Bypass -File build.ps1
 powershell -ExecutionPolicy Bypass -File build.ps1 -Force
 ```
 
-`build.ps1` tải `winutil.ps1` và Win11Debloat (tag `2026.08.24`) vào `external_scripts\`, tắt bước cài Windows feature của WinUtil, rồi nhúng assets, scripts, presets và locales vào một file `dist\KiWin.exe` duy nhất. Patch được kiểm chứng lúc build: nếu upstream WinUtil đổi khiến target không còn khớp đúng một lần, build **fail** thay vì ship script chưa patch. Nguồn tải được ghi vào `external_scripts\versions.json` kèm SHA256; nếu đã có thì bỏ qua tải (`-Force` để làm mới).
+`build.ps1` downloads `winutil.ps1` and Win11Debloat (tag `2026.08.24`) into `external_scripts\`, disables WinUtil's Windows-feature installation, then embeds assets, scripts, presets and locales into a single `dist\KiWin.exe`. The patch is verified at build time: if upstream WinUtil changes so the patch target is not found exactly once, the build fails instead of shipping an unpatched script. Sources are recorded in `external_scripts\versions.json` with their SHA256; if present, downloads are skipped (`-Force` to refresh).
 
-Ký số (cần chứng thư, không có thì SmartScreen vẫn cảnh báo):
-- Cert trong Windows store: đặt `KIWIN_SIGN_THUMBPRINT`.
-- File PFX: đặt `KIWIN_SIGN_PFX` (PFX mã hoá base64) và `KIWIN_SIGN_PFX_PASSWORD`.
-- Trên CI, thêm hai secret cùng tên `KIWIN_SIGN_PFX` và `KIWIN_SIGN_PFX_PASSWORD`; release sẽ tự ký. Không có thì build vẫn chạy nhưng cảnh báo chưa ký.
+Signing (needs a certificate, otherwise SmartScreen still warns):
+- Certificate in the Windows store: set `KIWIN_SIGN_THUMBPRINT`.
+- PFX file: set `KIWIN_SIGN_PFX` (base64-encoded PFX) and `KIWIN_SIGN_PFX_PASSWORD`.
+- On CI, add the same two secrets (`KIWIN_SIGN_PFX`, `KIWIN_SIGN_PFX_PASSWORD`) and releases are signed automatically.
 
 ## Credits
 
 - [WinUtil](https://github.com/ChrisTitusTech/winutil), Chris Titus Tech
 - [Win11Debloat](https://github.com/Raphire/Win11Debloat), Raphire
-- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler), DTLegit (ý tưởng cho chính sách chỉ cập nhật bảo mật)
+- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler), DTLegit (idea for the security-only update policy)
 
 ## License
 
