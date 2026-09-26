@@ -54,6 +54,7 @@ public static class AppPaths
             var target = AppDataDir();
             if (Directory.Exists(target)) Directory.Delete(target, recursive: true);
             Directory.CreateDirectory(target);
+            var targetRoot = Path.GetFullPath(target) + Path.DirectorySeparatorChar;
 
             stream.Position = 0;
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: false))
@@ -62,7 +63,9 @@ public static class AppPaths
                 {
                     var rel = NormalizeRelative(entry.FullName);
                     if (rel.Length == 0) continue;
-                    var dest = Path.Combine(target, rel);
+                    var dest = Path.GetFullPath(Path.Combine(target, rel));
+                    if (!dest.StartsWith(targetRoot, StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidDataException($"Zip entry escapes the extraction directory: {entry.FullName}");
                     if (entry.FullName.EndsWith("/") || entry.Name.Length == 0)
                     {
                         Directory.CreateDirectory(dest);
