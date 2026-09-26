@@ -246,6 +246,7 @@ public static class DebloatExecuteExternalScripts
     public static void RunWin11Debloat(string? configPath = null, CancellationToken cancel = default, Action<string>? outputLine = null)
     {
         var (basePath, userConfig) = PrepareContext(configPath);
+        var sysprep = ExtractWin11DebloatSysprep(userConfig);
         List<string>? win11debloatArgs = null;
         if (userConfig is not null)
         {
@@ -274,22 +275,52 @@ public static class DebloatExecuteExternalScripts
                 false);
             throw new FileNotFoundException("Bundled Win11Debloat script not found", win11debloatPath);
         }
-        var cmd = $"& '{win11debloatPath}'";
-        if (win11debloatArgs.Count > 0)
-            cmd += " " + string.Join(" ", win11debloatArgs);
-        Logger.Info("Executing Raphire Win11Debloat");
+
+        RunWin11DebloatPass(win11debloatPath, win11debloatArgs, sysprep: false, cancel, outputLine);
+
+        if (sysprep)
+        {
+            outputLine?.Invoke("==> Applying debloat to the default profile (new user accounts)...");
+            Logger.Info("Running a second Win11Debloat pass in sysprep mode (Default profile).");
+            RunWin11DebloatPass(win11debloatPath, win11debloatArgs, sysprep: true, cancel, outputLine);
+        }
+    }
+
+    private static void RunWin11DebloatPass(string scriptPath, List<string> args, bool sysprep,
+        CancellationToken cancel, Action<string>? outputLine)
+    {
+        var label = sysprep ? "Raphire Win11Debloat (sysprep: default profile)" : "Raphire Win11Debloat";
+        var cmd = $"& '{scriptPath}'";
+        if (args.Count > 0)
+            cmd += " " + string.Join(" ", args);
+        if (sysprep)
+            cmd += " -Sysprep";
+        Logger.Info($"Executing {label}");
         try
         {
             PowerShellHandler.RunCommand(cmd, timeout: TimeSpan.FromMinutes(15), cancel: cancel, outputLine: outputLine);
-            Logger.Info("Successfully executed Raphire Win11Debloat");
+            Logger.Info($"Successfully executed {label}");
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to execute Raphire Win11Debloat: {e.Message}");
+            Logger.Error($"Failed to execute {label}: {e.Message}");
+            if (sysprep)
+            {
+                Logger.Warning("Sysprep pass failed; continuing (the current user was already debloated).");
+                return;
+            }
             ErrorDialog.Show(
                 Localization.T("errors.win11debloat_failed", new() { ["error"] = e.Message }),
                 false);
             throw;
         }
+    }
+
+    private static bool ExtractWin11DebloatSysprep(JsonNode? data)
+    {
+        if (data is not JsonObject obj) return false;
+        if (obj["Win11Debloat"] is JsonObject win11)
+            return win11.GetBool("Sysprep", win11.GetBool("sysprep"));
+        return false;
     }
 }

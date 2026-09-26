@@ -407,14 +407,11 @@ public static class Program
     {
         try
         {
-            Logger.Info("Requesting a System Restore point (best effort)...");
+            Logger.Info("Creating a System Restore point (best effort)...");
             logLine?.Invoke($"==> {Localization.T("app.install_overlay.creating_restore_point")}");
-            const string cmd =
-                "$ErrorActionPreference='SilentlyContinue'; " +
-                "try { Enable-ComputerRestore -Drive $env:SystemDrive; " +
-                "Checkpoint-Computer -Description 'KiWin' -RestorePointType MODIFY_SETTINGS } catch {}; exit 0";
-            PowerShellHandler.RunCommand(cmd, timeout: TimeSpan.FromMinutes(3));
-            Logger.Info("System Restore point request finished.");
+            PowerShellHandler.RunScript("create_restore_point.ps1",
+                timeout: TimeSpan.FromMinutes(5), outputLine: logLine);
+            Logger.Info("System Restore point step finished.");
         }
         catch (Exception e)
         {
