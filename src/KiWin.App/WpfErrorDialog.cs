@@ -42,10 +42,9 @@ public class WpfErrorDialog : IErrorDialog
         var title = Localization.T("errors.dialog_title");
         if (!allowContinue)
         {
-            var stopText = Localization.T("errors.stop_installation");
-            var box = MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error,
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error,
                 MessageBoxResult.OK, MessageBoxOptions.None);
-            return box == MessageBoxResult.OK && false;
+            return false;
         }
         var continueText = Localization.T("errors.continue_anyways");
         var result = MessageBox.Show(message + $"\n\n[{continueText}] / [{Localization.T("errors.stop_installation")}]",

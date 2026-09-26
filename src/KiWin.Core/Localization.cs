@@ -78,6 +78,6 @@ public class Localization
             parameters.TryGetValue(match.Groups[1].Value, out var p)
                 ? p?.ToString() ?? ""
                 : match.Value);
-        return regex.IsMatch(replaced) ? text : replaced;
+        return replaced;
     }
 }
