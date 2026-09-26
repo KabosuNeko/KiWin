@@ -234,7 +234,7 @@ public static class StepCatalog
     }
 
     public static string BrowserTooltip(string packageId) =>
-        Localization.T(BrowserTooltipKeys.GetValueOrDefault(packageId, "steps.browser_installation.tooltip"));
+        Localization.T(BrowserTooltipKeys.GetValueOrDefault(packageId) ?? "steps.browser_installation.tooltip");
 
     public static string BrowserStepText(string browserName) =>
         Localization.T("steps.browser_installation.text_with_browser", new() { ["browser_name"] = browserName });

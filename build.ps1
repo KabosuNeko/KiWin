@@ -86,6 +86,12 @@ if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }
 New-Item -ItemType Directory -Force -Path (Join-Path $stage "external_scripts") | Out-Null
 Copy-Item (Join-Path $ROOT "Assets\*") $stage -Recurse -Force
 Copy-Item (Join-Path $SCRIPT_BUNDLE_DIR "*") (Join-Path $stage "external_scripts") -Recurse -Force
+Get-ChildItem (Join-Path $stage "external_scripts") -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+    foreach ($drop in @("Tests", ".github")) {
+        $p = Join-Path $_.FullName $drop
+        if (Test-Path $p) { Remove-Item -Recurse -Force $p }
+    }
+}
 Compress-Archive -Path (Join-Path $stage "*") -DestinationPath $bundlePath -CompressionLevel Optimal -Force
 Remove-Item -Recurse -Force $stage
 

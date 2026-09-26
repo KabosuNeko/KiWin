@@ -220,6 +220,22 @@ public static class Program
                     return 1;
                 }
             }
+            plan = InstallPlan.LoadInstallPlan();
+            executionSteps = RuntimePlan.BuildExecutionSteps(plan);
+            if (executionSteps.Count == 0)
+            {
+                var message = Localization.T("errors.empty_execution_plan");
+                Logger.Error(message);
+                Console.Error.WriteLine(message);
+                return 1;
+            }
+            runtimeSelectedBrowserPackage = plan.GetString("selected_browser_package").Trim();
+            if (!cli.DryRun)
+            {
+                var cfg = RuntimePlan.ExecutionConfigPath(cli, plan);
+                runtimeConfigPath = cfg.Path;
+                runtimeConfigIsTemp = cfg.IsTemp;
+            }
             var runOk = RunDebloatSequence(executionSteps, cli, runtimeConfigPath, runtimeConfigIsTemp,
                 runtimeSelectedBrowserPackage, null);
             Logger.Info(runOk ? "Debloat process finished successfully." : "Debloat process aborted.");
@@ -233,9 +249,10 @@ public static class Program
         var commandLine = $"\"{exe}\" {string.Join(" ", rawArgs.Select(a => $"\"{a}\""))}";
         try
         {
-            var psi = new ProcessStartInfo("cmd.exe", $"/k {commandLine}")
+            var psi = new ProcessStartInfo("cmd.exe", $"/k \"{commandLine}\"")
             {
-                UseShellExecute = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
             };
             psi.EnvironmentVariables["KIWIN_DEV_CONSOLE"] = "1";
             Process.Start(psi);

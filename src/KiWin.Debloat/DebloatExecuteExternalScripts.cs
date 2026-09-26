@@ -192,7 +192,7 @@ public static class DebloatExecuteExternalScripts
                     false);
                 throw new FileNotFoundException("Config not found", configPath);
             }
-            userConfig = LoadJsonConfig(configPath, "custom");
+            userConfig = LoadJsonConfig(configPath!, "custom");
             Logger.Info($"Using custom config: {configPath}");
         }
         else
@@ -255,6 +255,8 @@ public static class DebloatExecuteExternalScripts
         }
         win11debloatArgs ??= StepCatalog.DefaultWin11DebloatArgsList();
         win11debloatArgs = StepCatalog.FilterWin11DebloatArgs(win11debloatArgs, a => Logger.Warning($"Ignoring unsafe Win11Debloat argument: {a}"));
+        if (!win11debloatArgs.Contains("-Silent"))
+            win11debloatArgs.Insert(0, "-Silent");
 
         var candidates = Directory.Exists(Path.Combine(basePath, "external_scripts"))
             ? Directory.GetDirectories(Path.Combine(basePath, "external_scripts"), "Raphire-Win11Debloat-*")
