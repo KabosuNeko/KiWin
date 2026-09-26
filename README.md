@@ -20,10 +20,10 @@ A Windows 11 debloat tool written in **C#/WPF**: one GUI that drives community-r
   4. Debloat phase 2: **Win11Debloat** (Raphire)
   5. Set Windows Update to security-only (undo with `undo-update-policy=true`)
   6. Unpin all Taskbar and Start items
-- **Options** (Advanced, on by default): block Device Companion Apps, block WPBT, remove OneDrive, remove preinstalled apps, remove Xbox/gaming apps
+- **Options** (Advanced, on by default): apply debloat to new user accounts (a second Win11Debloat pass in sysprep mode, so the Default profile and future accounts start debloated), block Device Companion Apps, block WPBT, remove OneDrive, remove preinstalled apps, remove Xbox/gaming apps
 - **Browsers**: Waterfox, Helium, Firefox, Brave, LibreWolf
 - **Presets**: Standard / Minimal, plus install-plan JSON import and export
-- **Safety**: creates a System Restore point before running (best effort); validates Win11Debloat arguments so an imported plan cannot inject commands
+- **Safety**: creates a System Restore point before running (best effort, with the 24h creation throttle overridden and a registry export fallback if it fails); validates Win11Debloat arguments so an imported plan cannot inject commands
 - **CLI**: `headless`, `dry-run`, `config`, `skip-<step>-step`, `undo-update-policy`
 
 ## Requirements

@@ -31,7 +31,7 @@ public static class StepCatalog
     public static readonly string[] StepSlugs = DebloatSteps.Select(s => s.Slug).ToArray();
 
     public static readonly string[] BoolOptionSlugs =
-        { "developer-mode", "prevent-device-companion-apps", "wpbt", "remove-onedrive", "remove-apps", "remove-gaming-apps" };
+        { "developer-mode", "debloat-new-users", "prevent-device-companion-apps", "wpbt", "remove-onedrive", "remove-apps", "remove-gaming-apps" };
 
     public const string StandardPresetKey = "standard";
 
@@ -46,6 +46,7 @@ public static class StepCatalog
         ["configure-updates"] = new("steps.configure_updates.text", "steps.configure_updates.tooltip"),
         ["unpin-taskbar-start"] = new("steps.unpin_taskbar_start.text", "steps.unpin_taskbar_start.tooltip"),
         ["developer-mode"] = new("steps.developer_mode.text", "steps.developer_mode.tooltip"),
+        ["debloat-new-users"] = new("steps.debloat_new_users.text", "steps.debloat_new_users.tooltip"),
         ["prevent-device-companion-apps"] = new("steps.prevent_device_companion_apps.text", "steps.prevent_device_companion_apps.tooltip"),
         ["wpbt"] = new("steps.wpbt.text", "steps.wpbt.tooltip"),
         ["remove-onedrive"] = new("steps.remove_onedrive.text", "steps.remove_onedrive.tooltip"),

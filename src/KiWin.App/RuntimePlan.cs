@@ -49,6 +49,7 @@ internal static class RuntimePlan
             ["Win11Debloat"] = new JsonObject
             {
                 ["Args"] = new JsonArray(win11Args.Select(a => (JsonNode)a).ToArray()),
+                ["Sysprep"] = InstallPlan.IsItemEnabled(plan, "debloat-new-users"),
             },
         };
         var tmpPath = Path.Combine(Path.GetTempPath(), $"kiwin_install_plan_runtime_{Guid.NewGuid():N}.json");
