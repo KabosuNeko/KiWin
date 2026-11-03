@@ -1,21 +1,7 @@
-# KiWin Update Policy Changer
-# filename: update_policy_changer.ps1
-#
-# Restricts Windows Update to security (quality) updates for the currently
-# running feature release, blocking feature updates. Works on both Home and
-# Pro editions. A SYSTEM scheduled task re-applies the settings once they are
-# older than 364 days, which keeps the block in place on Windows Home past the
-# 365-day deferral limit.
-#
-# Also applies:
-#  - ExcludeWUDriversInQualityUpdate: drivers are no longer installed through
-#    Windows Update (use vendor updaters instead).
-#  - Active hours 08:00 - 02:00: the PC only restarts automatically during the
-#    early morning window (02:00 - 08:00).
-#
-# The registry technique (defer quality updates + pin feature release) follows
-# the approach popularized by DTLegit's FullWinUpdate-Disabler; this file is an
-# original implementation.
+# Keeps Windows Update on security fixes for the installed feature release.
+# A SYSTEM task re-applies the policy every 364 days; Windows Home stops
+# honoring deferrals after 365. Original implementation; the deferral
+# technique follows DTLegit's FullWinUpdate-Disabler.
 
 param(
     [switch]$Renewal
@@ -29,18 +15,15 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 $ErrorActionPreference = "Continue"
 
-# ----- Constants -----
 $TaskName        = "KiWinUpdatePolicyRenewal"
 $StateFolder     = "C:\ProgramData\KiWin\UpdatePolicy"
 $TimestampFile   = Join-Path $StateFolder "LastApplied.txt"
 $RenewalPeriod   = 364
 
-# ----- Registry targets -----
 $WuPolicyPath    = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
 $WuAutoPath      = "$WuPolicyPath\AU"
 $WuUxPath        = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
 
-# ----- Helpers -----
 function Get-TimestampAgeDays {
     if (-not (Test-Path $TimestampFile)) { return [int]::MaxValue }
     try {
@@ -83,49 +66,40 @@ function Assert-RegValue {
     }
 }
 
-function Get-ProductVersion {
-    $os = [System.Environment]::OSVersion.Version
-    if ($os.Build -ge 22000) { return "Windows 11" }
-    if ($os.Build -ge 10240) { return "Windows 10" }
-    $k = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-    $p = Get-ItemProperty -Path $k -ErrorAction SilentlyContinue
-    if ($p -and $p.ProductName) { return [string]$p.ProductName }
-    return "Windows"
-}
-
-function Detect-FeatureRelease {
-    $candidates = New-Object System.Collections.Generic.List[string]
-    $k = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
-    try { $p = Get-ItemProperty -Path $k -ErrorAction Stop } catch { $p = $null }
-    if ($p) {
-        if ($p.DisplayVersion -match "^\d{2}H\d$") { $candidates.Add([string]$p.DisplayVersion) }
-        if ($p.ReleaseId -match "^\d{2}H\d$") { $candidates.Add([string]$p.ReleaseId) }
+function Get-FeatureRelease {
+    $p = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -ErrorAction SilentlyContinue
+    foreach ($value in $p.DisplayVersion, $p.ReleaseId) {
+        if ($value -match "^\d{2}H\d$") { return [string]$value }
     }
-    try { $ci = Get-ComputerInfo -ErrorAction Stop } catch { $ci = $null }
-    if ($ci -and $ci.OSDisplayVersion -match "^\d{2}H\d$") { $candidates.Add([string]$ci.OSDisplayVersion) }
-    foreach ($c in $candidates) {
-        if ($c -and ($c -notmatch "\s")) { return $c }
-    }
-    Write-Host "Could not detect feature release; falling back to 24H2." -ForegroundColor Yellow
-    return "24H2"
 }
 
 function Set-KiWinUpdatePolicy {
     $changed = $false
 
-    # ---- WindowsUpdate policy key ----
-    $release = Detect-FeatureRelease
-    if (Assert-RegValue $WuPolicyPath "ProductVersion" ([string](Get-ProductVersion)) "String") { $changed = $true }
-    if (Assert-RegValue $WuPolicyPath "TargetReleaseVersion" 1) { $changed = $true }
-    if (Assert-RegValue $WuPolicyPath "TargetReleaseVersionInfo" $release "String") { $changed = $true }
+    $product = if ([Environment]::OSVersion.Version.Build -ge 22000) { "Windows 11" } else { "Windows 10" }
+    if (Assert-RegValue $WuPolicyPath "ProductVersion" $product "String") { $changed = $true }
+
+    $release = Get-FeatureRelease
+    if ($release) {
+        if (Assert-RegValue $WuPolicyPath "TargetReleaseVersion" 1) { $changed = $true }
+        if (Assert-RegValue $WuPolicyPath "TargetReleaseVersionInfo" $release "String") { $changed = $true }
+    }
+    else {
+        # Drop a stale pin instead of leaving the machine on an old release.
+        foreach ($name in "TargetReleaseVersion", "TargetReleaseVersionInfo") {
+            if (Get-ItemProperty -Path $WuPolicyPath -Name $name -ErrorAction SilentlyContinue) {
+                Remove-ItemProperty -Path $WuPolicyPath -Name $name -Force
+                $changed = $true
+            }
+        }
+        Write-Warning "Could not detect the feature release; feature updates are not pinned."
+    }
     if (Assert-RegValue $WuPolicyPath "DeferQualityUpdates" 1) { $changed = $true }
     if (Assert-RegValue $WuPolicyPath "DeferQualityUpdatesPeriodInDays" 4) { $changed = $true }
     if (Assert-RegValue $WuPolicyPath "ExcludeWUDriversInQualityUpdate" 1) { $changed = $true }
 
-    # ---- WindowsUpdate\AU subkey ----
     if (Assert-RegValue $WuAutoPath "AUPowerManagement" 0) { $changed = $true }
 
-    # ---- UX\Settings (active hours) ----
     if (Assert-RegValue $WuUxPath "ActiveHoursStart" 8) { $changed = $true }
     if (Assert-RegValue $WuUxPath "ActiveHoursEnd" 2) { $changed = $true }
     if (Assert-RegValue $WuUxPath "AllowMUUpdateService" 0) { $changed = $true }
@@ -144,7 +118,6 @@ function Set-KiWinUpdatePolicy {
     }
 }
 
-# ----- Renewal check (scheduled task path) -----
 if ($Renewal) {
     $age = Get-TimestampAgeDays
     if ($age -lt $RenewalPeriod) {
@@ -156,12 +129,9 @@ if ($Renewal) {
     exit 0
 }
 
-# ----- Main (interactive / KiWin run) -----
 Set-KiWinUpdatePolicy
 
-# Copy the script to a system-wide location and register the renewal task
-# against that copy, so the task keeps working even if the KiWin appdata
-# folder is later removed or re-extracted.
+# The task runs a stable copy so it survives cleanup of the downloaded script.
 New-Item -ItemType Directory -Path $StateFolder -Force | Out-Null
 $renewalScript = Join-Path $StateFolder "update_policy_changer.ps1"
 Copy-Item -Path $PSCommandPath -Destination $renewalScript -Force

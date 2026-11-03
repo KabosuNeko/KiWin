@@ -1,14 +1,9 @@
-# Unpin Taskbar & Start
-# filename: unpin_taskbar_start.ps1
-#
-# Removes all pinned items from the Taskbar and the Start menu pinned area.
+# Clears taskbar and Start pins for the current user and the Default profile.
 
-# 1. Stop the shell processes that own the Taskbar/Start state first,
-#    otherwise they flush their in-memory layout back to disk on exit.
+# The shell owns the layout and writes it back on exit, so stop it first.
 Stop-Process -Name "StartMenuExperienceHost" -Force -ErrorAction SilentlyContinue
 Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
 
-# 2. Taskbar pins (desktop app shortcuts + taskband registry blob).
 $taskbarPins = "$env:APPDATA\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 if (Test-Path $taskbarPins) {
 	Get-ChildItem -Path $taskbarPins -Force -ErrorAction SilentlyContinue |
@@ -31,9 +26,9 @@ if (Test-Path $taskband) {
 	Remove-ItemProperty -Path $taskband -Name "FavoritesImplicitAppShortcuts" -Force -ErrorAction SilentlyContinue
 }
 
-# 3. Start menu pins: replace each user's start2.bin with a blank template.
-#    Deleting the file does NOT work - the Start menu regenerates it with the
-#    default pins. Replacing it with an empty layout clears the pinned area.
+# Deleting start2.bin does not work: Start regenerates the default pins.
+# An empty layout clears the pinned area instead.
+# shortcut: the blank layout is build-specific; re-capture it if Start resets to default pins.
 $blankTemplate = Join-Path $PSScriptRoot "start2_blank.bin"
 if (Test-Path $blankTemplate) {
 	$startLayouts = @(
@@ -49,25 +44,6 @@ if (Test-Path $blankTemplate) {
 	}
 }
 
-$legacyLayouts = @(
-	"$env:LOCALAPPDATA\Packages\Microsoft.Windows.Cortana_cw5n1h2txyewy\LocalState\start.bin"
-)
-
-foreach ($layout in $legacyLayouts) {
-	if (Test-Path $layout) {
-		Remove-Item -Path $layout -Force -ErrorAction SilentlyContinue
-	}
-}
-
-# 4. Remove any leftover LayoutModification.xml we may have written in
-#    older versions of this script (blank start2.bin handles the layout now).
-$shellLayoutDir = "$env:LOCALAPPDATA\Microsoft\Windows\Shell"
-$legacyLayoutXml = Join-Path $shellLayoutDir "LayoutModification.xml"
-if (Test-Path $legacyLayoutXml) {
-	Remove-Item -Path $legacyLayoutXml -Force -ErrorAction SilentlyContinue
-}
-
-# 5. Bring the shell back up.
 Start-Sleep -Seconds 1
 Start-Process explorer -ErrorAction SilentlyContinue
 

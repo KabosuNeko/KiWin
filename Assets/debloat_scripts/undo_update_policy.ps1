@@ -1,17 +1,6 @@
-# Undo Update Policy Changer
-# filename: undo_update_policy.ps1
-#
-# Removes the Windows Update policy set by update_policy_changer.ps1 so the
-# system receives full Windows updates again.
-#
-# Also removes the automatic renewal scheduled task and helper files created by
-# update_policy_changer.ps1 (annual reapply), otherwise the policy would be
-# silently re-applied later. Both the current (KiWinUpdatePolicyRenewal) and
-# legacy (WindowsUpdateSettingsTask / CheckSecuritySettings /
-# ReapplySecuritySettings) task names and helper folders are cleaned up.
-#
-# NOTE: This only removes the policy values that KiWin sets. Other policy values
-# under the same registry keys (if any) are left untouched.
+# Removes the policy set by update_policy_changer.ps1, its renewal task, and
+# its helper files; otherwise the policy gets re-applied silently later.
+# Values under the same keys that KiWin did not set are left alone.
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -19,7 +8,6 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit 1
 }
 
-# Remove the automatic renewal scheduled tasks and helper files first
 $UpdateTasks = @("KiWinUpdatePolicyRenewal", "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings")
 foreach ($TaskName in $UpdateTasks) {
     if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) {
@@ -64,32 +52,27 @@ else {
         }
     }
 
-    # Remove the AU subkey created by update_policy_changer.ps1 (AUPowerManagement)
     $AUSubkey = Join-Path $RegPath "AU"
     if (Test-Path $AUSubkey) {
-        $AuRemaining = Get-ItemProperty -Path $AUSubkey -ErrorAction SilentlyContinue
-        if ($null -eq $AuRemaining -or $AuRemaining.PSObject.Properties.Count -eq 1) {
-            Remove-Item -Path $AUSubkey -Force -Recurse
+        Remove-ItemProperty -Path $AUSubkey -Name "AUPowerManagement" -Force -ErrorAction SilentlyContinue
+        $AUKey = Get-Item -LiteralPath $AUSubkey -ErrorAction SilentlyContinue
+        if ($AUKey -and -not $AUKey.GetValueNames() -and -not $AUKey.GetSubKeyNames()) {
+            Remove-Item -LiteralPath $AUSubkey -Force -Recurse
             Write-Host "Removed empty AU subkey: $AUSubkey"
         }
         else {
-            Remove-ItemProperty -Path $AUSubkey -Name "AUPowerManagement" -Force -ErrorAction SilentlyContinue
             Write-Host "Removed: AUPowerManagement (AU)"
         }
     }
 
-    # If the key is now empty, remove it entirely
-    if (Test-Path $RegPath) {
-        $remaining = Get-ItemProperty -Path $RegPath -ErrorAction SilentlyContinue
-        if ($null -eq $remaining -or $remaining.PSObject.Properties.Count -eq 1) {
-            Remove-Item -Path $RegPath -Force -Recurse
-            Write-Host "Removed empty policy key: $RegPath"
-        }
+    $PolicyKey = Get-Item -LiteralPath $RegPath -ErrorAction SilentlyContinue
+    if ($PolicyKey -and -not $PolicyKey.GetValueNames() -and -not $PolicyKey.GetSubKeyNames()) {
+        Remove-Item -LiteralPath $RegPath -Force -Recurse
+        Write-Host "Removed empty policy key: $RegPath"
     }
 }
 
-# Remove the UX\Settings values set by update_policy_changer.ps1
-# (restores Windows' default active hours behavior)
+# Restores Windows' default active hours.
 $UXRegPath = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
 if (Test-Path $UXRegPath) {
     $UXValuesToRemove = @(
@@ -108,7 +91,6 @@ if (Test-Path $UXRegPath) {
     }
 }
 
-# Restart Windows Update service so changes take effect
 Restart-Service -Name wuauserv -Force -ErrorAction SilentlyContinue
 
 Write-Host "`nUpdate policy removed. Windows will now receive full updates again."

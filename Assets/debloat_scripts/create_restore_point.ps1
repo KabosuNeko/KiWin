@@ -1,11 +1,6 @@
-# KiWin: create a System Restore point before debloating.
-#
-# Windows throttles restore points to one per 24h. This script temporarily sets
-# SystemRestorePointCreationFrequency to 0, creates the point, then restores the
-# previous value. If the restore point still fails, it exports HKLM and HKCU as a
-# fallback so changes can be reviewed/reverted.
-#
-# Always exits 0 (best effort); the outcome is written to stdout and the KiWin log.
+# Creates a restore point before debloating, bypassing the 24h throttle.
+# If it fails, exports HKLM/HKCU so changes can still be reviewed or reverted.
+# Always exits 0; the outcome is printed.
 
 $ErrorActionPreference = 'Continue'
 

@@ -1,8 +1,6 @@
-# Edge Vanisher
-# filename: edge_vanisher.ps1
-#
-# Removes Edge from Windows 11 and prevents re-installation, while preserving WebWebView2.
-# Edge can still be manually reinstalled from Microsoft's website.
+# Removes Edge from Windows 11 and blocks reinstall; WebView2 is kept.
+# Edge can still be reinstalled by hand from Microsoft's site.
+# shortcut: only the x86 install path is handled; a 64-bit Edge build would survive.
 
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
