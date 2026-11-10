@@ -3,8 +3,8 @@
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Administrator rights required." -ForegroundColor Red
-    exit 1
+    # throw, not exit: run through irm | iex, exit would close the user's window.
+    throw "Administrator rights required. Open PowerShell as administrator and run this again."
 }
 
 $StateFolder  = "C:\ProgramData\KiWin\UpdatePolicy"
@@ -21,9 +21,17 @@ $UndoNames = @{
                "UserChoiceActiveHoursStart", "UserChoiceActiveHoursEnd"
 }
 
-# Stop the renewal first so it cannot re-apply the policy halfway through.
 # The other names are DTLegit's tasks, which older KiWin versions used.
-foreach ($task in "KiWinUpdatePolicyRenewal", "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings") {
+$Tasks = "KiWinUpdatePolicyRenewal", "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings"
+
+# Without a KiWin task or state folder these values belong to Windows or another tool: leave them.
+if (-not (Test-Path -LiteralPath $StateFolder) -and -not (Get-ScheduledTask -TaskName $Tasks -ErrorAction SilentlyContinue)) {
+    Write-Host "KiWin's update policy is not installed; nothing to undo."
+    return
+}
+
+# Stop the renewal first so it cannot re-apply the policy halfway through.
+foreach ($task in $Tasks) {
     if (Get-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue) {
         Unregister-ScheduledTask -TaskName $task -Confirm:$false
         Write-Host "Removed scheduled task: $task"

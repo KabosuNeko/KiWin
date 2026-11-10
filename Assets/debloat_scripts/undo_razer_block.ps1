@@ -5,8 +5,8 @@
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Administrator rights required." -ForegroundColor Red
-    exit 1
+    # throw, not exit: run through irm | iex, exit would close the user's window.
+    throw "Administrator rights required. Open PowerShell as administrator and run this again."
 }
 
 $driverSearching = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching"
