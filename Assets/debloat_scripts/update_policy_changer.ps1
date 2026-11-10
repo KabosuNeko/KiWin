@@ -113,8 +113,10 @@ catch {
 }
 
 # An older KiWin left its own values in place, so they are not the originals.
+# The DTLegit task names come from KiWin versions before the rewrite in 3911e73.
 $legacy = -not (Test-Path $OriginalFile) -and
-    ((Test-Path (Join-Path $StateFolder "LastApplied.txt")) -or (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue))
+    ((Test-Path (Join-Path $StateFolder "LastApplied.txt")) -or
+     (Get-ScheduledTask -TaskName $TaskName, "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings" -ErrorAction SilentlyContinue))
 
 if ($legacy) {
     Write-Host "Earlier KiWin install found: undo will reset these values to Windows defaults."

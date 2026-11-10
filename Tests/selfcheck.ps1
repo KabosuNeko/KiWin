@@ -18,13 +18,25 @@ Assert ((Get-EndOfServicing '24H2' 'Professional') -eq [datetime]'2026-10-13') '
 Assert ((Get-EndOfServicing '24H2' 'Enterprise') -eq [datetime]'2027-10-12') '24H2 Enterprise end of servicing'
 Assert ($null -eq (Get-EndOfServicing '26H2' 'Professional')) 'unknown release counts as supported'
 
-# Original.json round trip: PowerShell 5.1 must give back every entry, also for one.
+# Original.json written the way the changer writes it, read by the undo's own line.
+# PowerShell 5.1 must give back every entry, also for one.
+$readOriginal = [scriptblock]::Create((Import-Part 'Assets\debloat_scripts\undo_update_policy.ps1' '$original') -join "`n")
 foreach ($count in 1, 3) {
     $saved = 1..$count | ForEach-Object { [pscustomobject]@{ Path = 'HKLM:\X'; Name = "V$_"; Value = $_; Kind = 'DWord' } }
+    $OriginalFile = [IO.Path]::GetTempFileName()
+    ConvertTo-Json -InputObject @($saved) | Set-Content -LiteralPath $OriginalFile -Encoding UTF8
+    . $readOriginal
     $n = 0
-    foreach ($entry in (ConvertTo-Json -InputObject @($saved) | ConvertFrom-Json)) { $n++; Assert ($entry.Kind -eq 'DWord') "entry $n of $count keeps its fields" }
+    foreach ($entry in $original) { $n++; Assert ($entry.Name -eq "V$n" -and $entry.Kind -eq 'DWord') "entry $n of $count keeps its fields" }
     Assert ($n -eq $count) "Original.json round trip with $count entries"
+    Remove-Item -LiteralPath $OriginalFile
 }
+
+# The two scripts run standalone, so each carries the list; they must match.
+$lists = 'update_policy_changer.ps1', 'undo_update_policy.ps1' | ForEach-Object {
+    (Import-Part "Assets\debloat_scripts\$_" '$UndoNames') -replace '\s+', ' '
+}
+Assert ($lists[0] -and $lists[0] -eq $lists[1]) '$UndoNames is the same in the changer and the undo'
 
 Assert ('6830bf501d2740c3317133ac0ecdc2a3ab80ed7f6c83e7f0f20dc66afbf758a7 *Win11Debloat.zip' -match
     '^([0-9a-fA-F]{64})\s+\*?Win11Debloat\.zip\s*$') 'SHA256SUMS line is recognized'
