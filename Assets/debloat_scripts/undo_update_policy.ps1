@@ -24,8 +24,11 @@ $UndoNames = @{
 # The other names are DTLegit's tasks, which older KiWin versions used.
 $Tasks = "KiWinUpdatePolicyRenewal", "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings"
 
-# Without a KiWin task or state folder these values belong to Windows or another tool: leave them.
-if (-not (Test-Path -LiteralPath $StateFolder) -and -not (Get-ScheduledTask -TaskName $Tasks -ErrorAction SilentlyContinue)) {
+# Only undo when KiWin really applied its policy (saved originals, the old timestamp, or a task).
+# A bare state folder is not proof: a failed install creates it before changing anything.
+if (-not (Test-Path -LiteralPath $OriginalFile) -and
+    -not (Test-Path -LiteralPath (Join-Path $StateFolder "LastApplied.txt")) -and
+    -not (Get-ScheduledTask -TaskName $Tasks -ErrorAction SilentlyContinue)) {
     Write-Host "KiWin's update policy is not installed; nothing to undo."
     return
 }
