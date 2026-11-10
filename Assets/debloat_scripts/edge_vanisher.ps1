@@ -1,7 +1,6 @@
 # Removes Edge from Windows 11 and blocks reinstall; WebView2 and every user's
 # Edge profile (%LOCALAPPDATA%\Microsoft\Edge\User Data) are kept.
-# Handles the system-wide install in Program Files (x86), where Edge lives on
-# x64, and a per-user install for the account running KiWin.
+# shortcut: only the x86 system install and the running account's per-user install are removed, loop over profiles if per-user Edge shows up for others.
 # EdgeUpdate stays because WebView2 updates through it; its attempts to put
 # Edge back fail on the locked folder below.
 # To allow Edge again, delete the locked folder from an elevated prompt first:

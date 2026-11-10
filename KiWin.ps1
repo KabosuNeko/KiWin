@@ -37,18 +37,13 @@ $ext = Join-Path $work 'external_scripts'
 $logDir = Join-Path $env:LOCALAPPDATA 'KiWin\Logs'
 $winutilConfig = Join-Path $work 'winutil-config.json'
 
-# Upstream releases this version was tested with. -Latest takes the newest
-# releases instead: Win11Debloat is then checked against its published
-# SHA256SUMS, WinUtil is not checked at all.
+# shortcut: tested releases pinned by hand, bump version and hash when upstream fixes something we need (-Latest skips the pin).
 $pinned = @{
     WinUtil            = '26.10.28'
     WinUtilSha256      = 'D0444CB266953D927E5CEE71455F4F1A6DA2D5B3CFD7E440DCEB4E6B1CBF4F7F'
     Win11Debloat       = '2026.10.30'
     Win11DebloatSha256 = '6830BF501D2740C3317133AC0ECDC2A3AB80ED7F6C83E7F0F20DC66AFBF758A7'
 }
-
-# Per-step limits; a hung step is stopped instead of blocking the run forever.
-$timeouts = @{ RestorePoint = 10; Edge = 10; WinUtil = 25; Win11Debloat = 20; Updates = 5; Unpin = 5 }
 
 # Accept "-Skip edge,winutil" both as an array and as one argument from `powershell -File`.
 $skipList = @($Skip | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_ })
@@ -99,7 +94,7 @@ function Invoke-ChildScript {
     param(
         [Parameter(Mandatory)][string]$Path,
         [string[]]$Arguments = @(),
-        [int]$TimeoutMinutes = 30,
+        [int]$TimeoutMinutes = 10,
         [int[]]$OkCodes = @(0)
     )
 
@@ -287,7 +282,6 @@ $doRestore = $skipList -notcontains 'restore-point'
 $doBrowser = [bool]$browserId -and $skipList -notcontains 'browser'
 # Removing Edge without installing a replacement would leave the machine with no browser.
 $doEdge = $doBrowser -and $skipList -notcontains 'edge'
-$doWinUtil = $skipList -notcontains 'winutil'
 $doDebloat = $skipList -notcontains 'win11debloat'
 $doUpdates = $skipList -notcontains 'updates'
 $doUnpin = $skipList -notcontains 'unpin'
@@ -297,30 +291,23 @@ if (-not $doEdge -and $skipList -notcontains 'edge') {
     $notes += 'Microsoft Edge is kept: no replacement browser is being installed (pass -Browser to remove it).'
 }
 
-# Flags that only matter for software that is about to be removed or is not there.
-$wanted = @($debloatArgs)
-if ($doEdge) { $wanted = @($wanted | Where-Object { '-DisableEdgeAI', '-DisableEdgeAds' -notcontains $_ }) }
-if ($Browser -ne 'Brave' -and -not (Test-Path "$env:ProgramFiles\BraveSoftware")) {
-    $wanted = @($wanted | Where-Object { $_ -ne '-DisableBraveBloat' })
-}
-
-$supported = Get-SupportedSwitches $paths.Win11Debloat ($wanted + '-Sysprep')
+$supported = Get-SupportedSwitches $paths.Win11Debloat ($debloatArgs + '-Sysprep')
 $debloatFlags = @($supported | Where-Object { $_ -ne '-Sysprep' })
-$dropped = @($wanted | Where-Object { $debloatFlags -notcontains $_ })
+$dropped = @($debloatArgs | Where-Object { $debloatFlags -notcontains $_ })
 if ($dropped.Count -gt 0) { Write-Warning "Win11Debloat no longer supports: $($dropped -join ', ')" }
 if ($debloatFlags -notcontains '-Silent') { throw 'Win11Debloat dropped -Silent; refusing to run it interactively.' }
 $debloatLogArgs = if ((Get-Content -LiteralPath $paths.Win11Debloat -Raw) -match '\[string\]\s*\$LogPath\b') { @('-LogPath', $logDir) } else { @() }
 $doSysprep = $doDebloat -and ($skipList -notcontains 'new-users') -and ($supported -contains '-Sysprep')
 
 $tweakNames = @($winutilTweaks)
-if ($tweakNames -contains 'WPFTweaksRemoveOneDrive' -and (Test-OneDriveInUse)) {
+if (Test-OneDriveInUse) {
     $tweakNames = @($tweakNames | Where-Object { $_ -ne 'WPFTweaksRemoveOneDrive' })
     $notes += 'OneDrive is kept: an account is signed in, and removing it would cut off cloud-only files.'
 }
 $tweaks = @(Get-SupportedTweaks $paths.WinUtil $tweakNames)
 $droppedTweaks = @($tweakNames | Where-Object { $tweaks -notcontains $_ })
 if ($droppedTweaks.Count -gt 0) { Write-Warning "WinUtil no longer has: $($droppedTweaks -join ', ')" }
-$doWinUtil = $doWinUtil -and $tweaks.Count -gt 0
+$doWinUtil = $skipList -notcontains 'winutil' -and $tweaks.Count -gt 0
 
 # Win11Debloat already clears Start for every user, so only the taskbar is left here.
 $unpinArgs = if ($doDebloat -and $debloatFlags -contains '-ClearStartAllUsers') { @('-TaskbarOnly') } else { @() }
@@ -331,12 +318,8 @@ if ($driverSearch -and $driverSearch.SearchOrderConfig -eq 0) {
     $notes += "Automatic driver downloads are off (left by an older KiWin). To turn them back on:`n    irm $RawBase/Assets/debloat_scripts/undo_razer_block.ps1 | iex"
 }
 
-if ($doBrowser) {
-    $wingetReady = if ($DryRun) { [bool](Get-Command winget -ErrorAction SilentlyContinue) } else { Initialize-Winget }
-    if (-not $wingetReady) {
-        if ($DryRun) { $notes += 'winget was not found; the real run will try to register App Installer first.' }
-        else { throw 'winget is required to install the browser. Install App Installer from the Store, or use -Skip browser.' }
-    }
+if ($doBrowser -and -not $DryRun -and -not (Initialize-Winget)) {
+    throw 'winget is required to install the browser. Install App Installer from the Store, or use -Skip browser.'
 }
 
 $steps = @()
@@ -384,7 +367,7 @@ try {
     if ($doRestore) {
         Write-Host '==> System Restore point'
         try {
-            $code = Invoke-ChildScript (Join-Path $scripts 'create_restore_point.ps1') -TimeoutMinutes $timeouts.RestorePoint -OkCodes 0, 2
+            $code = Invoke-ChildScript (Join-Path $scripts 'create_restore_point.ps1') -OkCodes 0, 2
         }
         catch {
             Write-Warning $_.Exception.Message
@@ -415,21 +398,21 @@ try {
 
     if ($doEdge) {
         Write-Host '==> Remove Microsoft Edge'
-        $null = Invoke-ChildScript (Join-Path $scripts 'edge_vanisher.ps1') -TimeoutMinutes $timeouts.Edge
+        $null = Invoke-ChildScript (Join-Path $scripts 'edge_vanisher.ps1')
     }
 
     if ($doWinUtil) {
         Write-Host '==> WinUtil tweaks'
-        $null = Invoke-ChildScript $paths.WinUtil @('-Config', $winutilConfig) -TimeoutMinutes $timeouts.WinUtil
+        $null = Invoke-ChildScript $paths.WinUtil @('-Config', $winutilConfig) -TimeoutMinutes 25
     }
 
     if ($doDebloat) {
         Write-Host '==> Win11Debloat'
-        $null = Invoke-ChildScript $paths.Win11Debloat ($debloatFlags + $debloatLogArgs) -TimeoutMinutes $timeouts.Win11Debloat
+        $null = Invoke-ChildScript $paths.Win11Debloat ($debloatFlags + $debloatLogArgs) -TimeoutMinutes 20
         if ($doSysprep) {
             Write-Host '==> Win11Debloat (Default profile, new user accounts)'
             try {
-                $null = Invoke-ChildScript $paths.Win11Debloat ($debloatFlags + $debloatLogArgs + '-Sysprep') -TimeoutMinutes $timeouts.Win11Debloat
+                $null = Invoke-ChildScript $paths.Win11Debloat ($debloatFlags + $debloatLogArgs + '-Sysprep') -TimeoutMinutes 20
             }
             catch {
                 Write-Warning "Sysprep pass failed: $($_.Exception.Message) (the current user is already debloated)."
@@ -439,12 +422,12 @@ try {
 
     if ($doUpdates) {
         Write-Host '==> Windows Update policy'
-        $null = Invoke-ChildScript (Join-Path $scripts 'update_policy_changer.ps1') -TimeoutMinutes $timeouts.Updates
+        $null = Invoke-ChildScript (Join-Path $scripts 'update_policy_changer.ps1')
     }
 
     if ($doUnpin) {
         Write-Host '==> Unpin taskbar and Start'
-        $null = Invoke-ChildScript (Join-Path $scripts 'unpin_taskbar_start.ps1') $unpinArgs -TimeoutMinutes $timeouts.Unpin
+        $null = Invoke-ChildScript (Join-Path $scripts 'unpin_taskbar_start.ps1') $unpinArgs
     }
 }
 catch {

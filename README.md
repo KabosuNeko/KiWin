@@ -82,6 +82,7 @@ Edge: the steps to unlock its folder are at the top of `Assets\debloat_scripts\e
 
 - `KiWin.ps1`: the entry point
 - `Assets\debloat_scripts\`: Edge removal, update policy and its undo, taskbar unpin, restore point, Razer block undo
+- `Tests\selfcheck.ps1`: checks the tricky logic without changing the system (`powershell -ExecutionPolicy Bypass -File .\Tests\selfcheck.ps1`)
 
 The script uses the raw URL of this repo to fetch the helper scripts when it is not on disk. If you fork it, update `$RawBase` at the top of `KiWin.ps1`.
 

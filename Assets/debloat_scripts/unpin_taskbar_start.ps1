@@ -29,8 +29,7 @@ if (Test-Path $taskband) {
 
 if (-not $TaskbarOnly) {
     # Deleting start2.bin does not work: Start regenerates the default pins.
-    # An empty layout clears the pinned area instead. The format can change
-    # between builds; if Start comes back with default pins, re-capture it.
+    # shortcut: the blank layout is build-specific, re-capture it if Start comes back with default pins.
     $blankTemplate = Join-Path $PSScriptRoot "start2_blank.bin"
     if (Test-Path -LiteralPath $blankTemplate) {
         $relative = "AppData\Local\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState\start2.bin"
