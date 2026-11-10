@@ -53,9 +53,10 @@ foreach ($keyPath in "$Wu\AU", $Wu) {
     }
 }
 
+# rmdir, not Remove-Item: users can plant junctions under ProgramData, and 5.1's Remove-Item -Recurse follows them.
 foreach ($folder in $StateFolder, "C:\ProgramData\Windows Updates Settings", "C:\ProgramData\UpdateWindowsUpdatePoliciesAnnually") {
-    if (Test-Path $folder) {
-        Remove-Item -Path $folder -Recurse -Force
+    if (Test-Path -LiteralPath $folder) {
+        cmd /c rmdir /s /q "$folder"
         Write-Host "Removed helper folder: $folder"
     }
 }

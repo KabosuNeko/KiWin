@@ -13,10 +13,13 @@ function Import-Part([string]$File, [string[]]$Names) {
 }
 function Assert($Condition, [string]$What) { if (-not $Condition) { throw "FAIL: $What" }; Write-Host "ok  $What" }
 
-. ([scriptblock]::Create((Import-Part 'Assets\debloat_scripts\update_policy_changer.ps1' '$EndOfServicing', 'Get-EndOfServicing') -join "`n"))
-Assert ((Get-EndOfServicing '24H2' 'Professional') -eq [datetime]'2026-10-13') '24H2 Pro end of servicing'
-Assert ((Get-EndOfServicing '24H2' 'Enterprise') -eq [datetime]'2027-10-12') '24H2 Enterprise end of servicing'
-Assert ($null -eq (Get-EndOfServicing '26H2' 'Professional')) 'unknown release counts as supported'
+. ([scriptblock]::Create((Import-Part 'Assets\debloat_scripts\update_policy_changer.ps1' 'Get-EndOfServicing') -join "`n"))
+# Real dates: 24H2 Home/Pro 2026-10-13, Enterprise 2027-10-12, 23H2 Home/Pro 2025-11-11. The formula must never be later.
+Assert ((Get-EndOfServicing '24H2' 'Professional') -eq [datetime]'2026-10-01') '24H2 Pro end of servicing'
+Assert ((Get-EndOfServicing '24H2' 'Enterprise') -eq [datetime]'2027-10-01') '24H2 Enterprise end of servicing'
+Assert ((Get-EndOfServicing '23H2' 'Core') -le [datetime]'2025-11-11') '23H2 Home is not later than the real date'
+Assert ((Get-EndOfServicing '26H2' 'Professional') -eq [datetime]'2028-10-01') 'future release gets a date too'
+Assert ($null -eq (Get-EndOfServicing '' 'Professional')) 'missing release gives no date'
 
 # Original.json written the way the changer writes it, read by the undo's own line.
 # PowerShell 5.1 must give back every entry, also for one.

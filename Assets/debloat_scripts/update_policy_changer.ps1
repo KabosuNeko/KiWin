@@ -19,15 +19,6 @@ $OriginalFile = Join-Path $StateFolder "Original.json"
 $Wu = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate"
 $Ux = "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
 
-# shortcut: hand-kept dates (Home/Pro, Enterprise/Education), add each new release when Microsoft publishes its lifecycle; unlisted releases count as supported.
-$EndOfServicing = @{
-    "21H2" = "2023-10-10", "2024-10-08"
-    "22H2" = "2024-10-08", "2025-10-14"
-    "23H2" = "2025-11-11", "2026-11-10"
-    "24H2" = "2026-10-13", "2027-10-12"
-    "25H2" = "2027-10-12", "2028-10-10"
-}
-
 # Everything undo_update_policy.ps1 removes; keep the two lists in sync.
 $UndoNames = @{
     $Wu      = "ProductVersion", "TargetReleaseVersion", "TargetReleaseVersionInfo", "DeferQualityUpdates",
@@ -37,9 +28,13 @@ $UndoNames = @{
                "UserChoiceActiveHoursStart", "UserChoiceActiveHoursEnd"
 }
 
+# Computed, not listed, so the copy the renewal task runs also knows future releases.
+# Windows 11 releases end in October two years later (three for Enterprise/Education);
+# October 1 errs early (23H2 Home/Pro actually ran to November 11).
 function Get-EndOfServicing([string]$Release, [string]$Edition) {
-    if (-not $EndOfServicing.ContainsKey($Release)) { return $null }
-    [datetime]$EndOfServicing[$Release][[int]($Edition -match "Enterprise|Education")]
+    if ($Release -notmatch "^\d{2}H\d$") { return $null }
+    $years = 2 + [int]($Edition -match "Enterprise|Education")
+    [datetime]("20{0}-10-01" -f ([int]$Release.Substring(0, 2) + $years))
 }
 
 function Set-Value([string]$Path, [string]$Name, $Value, [string]$Type = "DWord") {
@@ -78,7 +73,6 @@ function Set-KiWinUpdatePolicy {
     Set-Value "$Wu\AU" "AUPowerManagement" 0
     Set-Value $Ux "ActiveHoursStart" 8
     Set-Value $Ux "ActiveHoursEnd" 2
-    Set-Value $Ux "AllowMUUpdateService" 0
     Set-Value $Ux "SmartActiveHoursState" 0
     Set-Value $Ux "UserChoiceActiveHoursStart" 8
     Set-Value $Ux "UserChoiceActiveHoursEnd" 2
@@ -120,8 +114,17 @@ $legacy = -not (Test-Path $OriginalFile) -and
 
 if ($legacy) {
     Write-Host "Earlier KiWin install found: undo will reset these values to Windows defaults."
-    # That version also blocked drivers from Windows Update.
+    # Those versions also blocked drivers, and .NET/Office updates (Microsoft Update).
     Remove-ItemProperty -Path $Wu -Name "ExcludeWUDriversInQualityUpdate" -ErrorAction SilentlyContinue
+    Remove-ItemProperty -Path $Ux -Name "AllowMUUpdateService" -ErrorAction SilentlyContinue
+    # DTLegit's task re-applies its whole policy (driver block included) at every startup.
+    foreach ($t in "WindowsUpdateSettingsTask", "CheckSecuritySettings", "ReapplySecuritySettings") {
+        Unregister-ScheduledTask -TaskName $t -Confirm:$false -ErrorAction SilentlyContinue
+    }
+    # rmdir, not Remove-Item: users can plant junctions under ProgramData, and 5.1's Remove-Item -Recurse follows them.
+    foreach ($d in "C:\ProgramData\Windows Updates Settings", "C:\ProgramData\UpdateWindowsUpdatePoliciesAnnually") {
+        if (Test-Path -LiteralPath $d) { cmd /c rmdir /s /q "$d" }
+    }
 }
 elseif (-not (Test-Path $OriginalFile)) {
     $saved = foreach ($path in $UndoNames.Keys) {
