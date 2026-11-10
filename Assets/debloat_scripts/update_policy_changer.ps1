@@ -1,7 +1,11 @@
-# Keeps Windows Update on security fixes for the installed feature release.
-# A SYSTEM task re-applies the policy every 364 days; Windows Home stops
-# honoring deferrals after 365. Original implementation; the deferral
-# technique follows DTLegit's FullWinUpdate-Disabler.
+# Keeps Windows on the installed feature release (no feature upgrades) and
+# delays monthly cumulative updates by 4 days. Cumulative updates still
+# install, so this is not "security only": they carry non-security fixes too.
+# The pinned release keeps getting updates only until its end of servicing
+# (e.g. 24H2 Home/Pro: October 2026); after that, run undo_update_policy.ps1.
+# Drivers from Windows Update are left alone.
+# A SYSTEM task re-applies the policy every 364 days. Original implementation;
+# the deferral technique follows DTLegit's FullWinUpdate-Disabler.
 
 param(
     [switch]$Renewal
@@ -96,7 +100,13 @@ function Set-KiWinUpdatePolicy {
     }
     if (Assert-RegValue $WuPolicyPath "DeferQualityUpdates" 1) { $changed = $true }
     if (Assert-RegValue $WuPolicyPath "DeferQualityUpdatesPeriodInDays" 4) { $changed = $true }
-    if (Assert-RegValue $WuPolicyPath "ExcludeWUDriversInQualityUpdate" 1) { $changed = $true }
+    # Older KiWin versions blocked drivers, which leaves fresh installs without them.
+    $drivers = Get-ItemProperty -Path $WuPolicyPath -Name "ExcludeWUDriversInQualityUpdate" -ErrorAction SilentlyContinue
+    if ($null -ne $drivers -and $drivers.ExcludeWUDriversInQualityUpdate -eq 1) {
+        Remove-ItemProperty -Path $WuPolicyPath -Name "ExcludeWUDriversInQualityUpdate" -Force
+        Write-Host "Removed ExcludeWUDriversInQualityUpdate (drivers from Windows Update are allowed again)"
+        $changed = $true
+    }
 
     if (Assert-RegValue $WuAutoPath "AUPowerManagement" 0) { $changed = $true }
 
@@ -129,10 +139,36 @@ if ($Renewal) {
     exit 0
 }
 
+# The renewal task runs a script from here as SYSTEM. Standard users can create
+# folders under ProgramData, so one created in advance would be theirs to edit:
+# take ownership and replace the ACL with SYSTEM/Administrators full, Users read.
+function Protect-StateFolder {
+    param([string]$Path)
+    New-Item -ItemType Directory -Path $Path -Force | Out-Null
+    $item = Get-Item -LiteralPath $Path -Force
+    if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        throw "$Path is a link, not a folder."
+    }
+    # /L acts on links themselves, so a planted junction inside cannot redirect the change.
+    & icacls.exe $Path /setowner "*S-1-5-32-544" /T /C /L /Q | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "icacls /setowner failed on $Path (code $LASTEXITCODE)" }
+    & icacls.exe $Path /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "*S-1-5-32-545:(OI)(CI)RX" /T /C /L /Q | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "icacls /grant failed on $Path (code $LASTEXITCODE)" }
+}
+
+# Secure the folder before anything (timestamp, script copy) is written into it.
+try {
+    Protect-StateFolder (Split-Path $StateFolder -Parent)
+    Protect-StateFolder $StateFolder
+}
+catch {
+    Write-Host "Could not secure ${StateFolder}: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
 Set-KiWinUpdatePolicy
 
 # The task runs a stable copy so it survives cleanup of the downloaded script.
-New-Item -ItemType Directory -Path $StateFolder -Force | Out-Null
 $renewalScript = Join-Path $StateFolder "update_policy_changer.ps1"
 Copy-Item -Path $PSCommandPath -Destination $renewalScript -Force
 
@@ -145,8 +181,8 @@ $settings  = New-ScheduledTaskSettingsSet -Compatibility Win8 -StartWhenAvailabl
     -DisallowStartIfOnBatteries:$false -RestartCount 5 -RestartInterval "PT1M"
 Register-ScheduledTask -TaskName $TaskName -Action $action `
     -Trigger @($atStartup, $weekly) -Principal $principal -Settings $settings `
-    -Description "KiWin: re-apply the security-only update policy once it is older than 364 days." `
+    -Description "KiWin: re-apply the Windows Update policy once it is older than 364 days." `
     -Force | Out-Null
 Write-Host "Renewal task '$TaskName' registered."
 
-Write-Host "Done. Windows Update will deliver security updates only."
+Write-Host "Done. Windows stays on its current feature release; cumulative updates arrive 4 days late."

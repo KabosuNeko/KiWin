@@ -53,7 +53,7 @@ $winutilTweaks = @(
     'WPFTweaksTelemetry', 'WPFTweaksWPBT', 'WPFTweaksWidget', 'WPFTweaksServices',
     'WPFTweaksDisplay', 'WPFTweaksRightClickMenu', 'WPFTweaksRemoveOneDrive',
     'WPFTweaksRemoveHomeAndGallery', 'WPFTweaksWindowsAI', 'WPFTweaksDisableStoreSearch',
-    'WPFTweaksLocation', 'WPFTweaksReservedStorage', 'WPFTweaksRazerBlock'
+    'WPFTweaksLocation', 'WPFTweaksReservedStorage'
 )
 
 $debloatArgs = @(
@@ -214,8 +214,12 @@ if ($droppedTweaks.Count -gt 0) { Write-Warning "WinUtil no longer has: $($dropp
 $browserId = if ($Browser -eq 'None') { '' } else { $browserPackages[$Browser] }
 
 $doRestore = $skipList -notcontains 'restore-point'
-$doEdge = $skipList -notcontains 'edge'
 $doBrowser = [bool]$browserId -and $skipList -notcontains 'browser'
+# Removing Edge without installing a replacement would leave the machine with no browser.
+$doEdge = $doBrowser -and $skipList -notcontains 'edge'
+$edgeKeptNote = if (-not $doEdge -and $skipList -notcontains 'edge') {
+    'Microsoft Edge is kept: no replacement browser is being installed (pass -Browser to remove it).'
+}
 $doWinUtil = $skipList -notcontains 'winutil' -and $tweaks.Count -gt 0
 $doDebloat = $skipList -notcontains 'win11debloat'
 $doSysprep = $doDebloat -and ($skipList -notcontains 'new-users') -and ($supported -contains '-Sysprep')
@@ -230,11 +234,11 @@ if ($doBrowser -and -not (Get-Command winget -ErrorAction SilentlyContinue)) {
 
 $steps = @()
 if ($doRestore) { $steps += 'System Restore point' }
-if ($doEdge) { $steps += 'Remove Microsoft Edge' }
 if ($doBrowser) { $steps += "Install $Browser ($browserId)" }
+if ($doEdge) { $steps += 'Remove Microsoft Edge (your Edge profile data is kept)' }
 if ($doWinUtil) { $steps += "WinUtil tweaks ($($tweaks.Count))" }
 if ($doDebloat) { $steps += "Win11Debloat ($($debloatFlags.Count) flags)$(if ($doSysprep) { ' + sysprep pass' } else { '' })" }
-if ($doUpdates) { $steps += 'Security-only Windows Update policy' }
+if ($doUpdates) { $steps += 'Windows Update: stay on the current feature release, delay quality updates 4 days' }
 if ($doUnpin) { $steps += 'Unpin taskbar and Start' }
 
 Write-Host "Windows: $osName (build $($cv.CurrentBuildNumber))"
@@ -242,6 +246,7 @@ Write-Host "WinUtil: $($paths.WinUtil)"
 Write-Host "Win11Debloat: $($paths.Win11Debloat)"
 Write-Host 'Steps:'
 $steps | ForEach-Object { Write-Host "  - $_" }
+if ($edgeKeptNote) { Write-Host $edgeKeptNote -ForegroundColor Yellow }
 
 if ($steps.Count -eq 0) {
     Write-Host 'Nothing to do: every step is skipped.'
@@ -269,11 +274,7 @@ try {
         & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $scripts 'create_restore_point.ps1')
     }
 
-    if ($doEdge) {
-        Write-Host '==> Remove Microsoft Edge'
-        Invoke-ChildScript (Join-Path $scripts 'edge_vanisher.ps1')
-    }
-
+    # The browser goes first: if it fails to install, the run stops before Edge is removed.
     if ($doBrowser) {
         Write-Host "==> Install $Browser"
         try {
@@ -283,6 +284,11 @@ try {
             Write-Warning "VC++ redistributable install failed: $($_.Exception.Message)"
         }
         Install-WingetPackage $browserId
+    }
+
+    if ($doEdge) {
+        Write-Host '==> Remove Microsoft Edge'
+        Invoke-ChildScript (Join-Path $scripts 'edge_vanisher.ps1')
     }
 
     if ($doWinUtil) {
@@ -305,7 +311,7 @@ try {
     }
 
     if ($doUpdates) {
-        Write-Host '==> Security-only Windows Update policy'
+        Write-Host '==> Windows Update policy'
         Invoke-ChildScript (Join-Path $scripts 'update_policy_changer.ps1')
     }
 
@@ -316,7 +322,10 @@ try {
 }
 catch {
     Write-Host "KiWin failed: $($_.Exception.Message)" -ForegroundColor Red
-    exit 1
+    # exit inside iex or -Command closes the window before the error can be read.
+    if ($PSCommandPath) { exit 1 }
+    $global:LASTEXITCODE = 1
+    return
 }
 
 Write-Host ''

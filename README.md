@@ -11,11 +11,11 @@ The script self-elevates (UAC), asks for a browser, shows the plan, and waits fo
 ## What it does
 
 1. Creates a System Restore point (best effort; falls back to exporting HKLM/HKCU)
-2. Removes Microsoft Edge permanently (keeps WebView2)
-3. Installs the browser you pick via **winget**
+2. Installs the browser you pick via **winget**
+3. Removes Microsoft Edge and blocks its reinstall (keeps WebView2 and your Edge profile data). Runs only when step 2 installs a browser, so you are never left without one
 4. Applies **WinUtil** (Chris Titus Tech) tweaks
 5. Runs **Win11Debloat** (Raphire), plus a second pass so new user accounts start debloated
-6. Sets Windows Update to security-only (undo below)
+6. Keeps Windows on its current feature release and delays cumulative updates by 4 days (undo below). Cumulative updates still install, with both security and non-security fixes. Once the pinned release reaches end of servicing (24H2 Home/Pro: October 2026), run the undo so Windows can move on
 7. Unpins all Taskbar and Start items
 
 Browsers: Waterfox, Helium, Firefox, Brave, LibreWolf.
@@ -70,7 +70,7 @@ The script uses the raw URL of this repo to fetch the helper scripts when it is 
 
 - [WinUtil](https://github.com/ChrisTitusTech/winutil), Chris Titus Tech
 - [Win11Debloat](https://github.com/Raphire/Win11Debloat), Raphire
-- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler), DTLegit (idea for the security-only update policy)
+- [FullWinUpdate-Disabler](https://github.com/DTLegit/FullWinUpdate-Disabler), DTLegit (idea for the update deferral policy)
 
 ## License
 

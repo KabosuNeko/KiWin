@@ -1,6 +1,10 @@
-# Removes Edge from Windows 11 and blocks reinstall; WebView2 is kept.
-# Edge can still be reinstalled by hand from Microsoft's site.
-# shortcut: only the x86 install path is handled; a 64-bit Edge build would survive.
+# Removes Edge from Windows 11 and blocks reinstall; WebView2 and the user's
+# Edge profile (%LOCALAPPDATA%\Microsoft\Edge) are kept.
+# Only the Program Files (x86) install is handled, which is where Edge lives on x64.
+# To allow Edge again, delete the locked folder from an elevated prompt first:
+#   takeown /F "%ProgramFiles(x86)%\Microsoft\Edge" /R /D Y
+#   icacls "%ProgramFiles(x86)%\Microsoft\Edge" /reset /T /C
+#   rmdir /S /Q "%ProgramFiles(x86)%\Microsoft\Edge"
 
 
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
@@ -52,15 +56,38 @@ function Remove-ShortcutByTarget {
 	}
 }
 
-$edgeInstaller = Get-ChildItem -Path "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\*\Installer\setup.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+# Only the browser itself; msedgewebview2 belongs to WebView2 and must keep running.
+Stop-Process -Name msedge -Force -ErrorAction SilentlyContinue
+
+$edgeInstaller = Get-ChildItem -Path "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\*\Installer\setup.exe" -ErrorAction SilentlyContinue |
+	Sort-Object { [version]$_.Directory.Parent.Name } -Descending -ErrorAction SilentlyContinue |
+	Select-Object -First 1
 if ($edgeInstaller) {
-	Start-Process $edgeInstaller.FullName -ArgumentList "--uninstall --system-level --force-uninstall --verbose-logging" -Wait
+	# Outside the EEA the uninstaller refuses unless the legacy Edge stub exists.
+	$legacyStub = "$env:SystemRoot\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe"
+	$createdStub = $false
+	if (-not (Test-Path -LiteralPath $legacyStub)) {
+		try {
+			New-Item -ItemType File -Path $legacyStub -Force -ErrorAction Stop | Out-Null
+			$createdStub = $true
+		}
+		catch { Write-Host "Could not create the legacy Edge stub: $($_.Exception.Message)" }
+	}
+
+	$proc = Start-Process $edgeInstaller.FullName -ArgumentList "--uninstall --system-level --force-uninstall --verbose-logging" -Wait -PassThru
+	if ($proc.ExitCode -eq 0 -or $proc.ExitCode -eq 19) {
+		Write-Host "Edge uninstaller finished (code $($proc.ExitCode))."
+	}
+	else {
+		Write-Warning "Edge uninstaller exited with code $($proc.ExitCode); removing the files directly."
+	}
+
+	if ($createdStub) { Remove-Item -LiteralPath $legacyStub -Force -ErrorAction SilentlyContinue }
 }
 
-Get-Process | Where-Object { $_.Name -like "*edge*" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Stop-Process -Name msedge -Force -ErrorAction SilentlyContinue
 
 $pathsToRemove = @(
-	"$env:LOCALAPPDATA\Microsoft\Edge",
 	"${env:ProgramFiles(x86)}\Microsoft\Edge",
 	"${env:ProgramFiles(x86)}\Microsoft\EdgeCore"
 )
@@ -87,7 +114,8 @@ $regKeys = @(
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe",
 	"HKLM:\SOFTWARE\Microsoft\Edge",
 	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Edge",
-	"HKCU:\Software\Microsoft\Edge"
+	# Left behind when the uninstaller refused and the files were deleted directly.
+	"HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge"
 )
 
 foreach ($key in $regKeys) {
