@@ -8,7 +8,7 @@ Flags (run the file or a scriptblock instead of plain iex):
     powershell -ExecutionPolicy Bypass -File .\KiWin.ps1 -Browser Firefox -Yes
     & ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/KabosuNeko/KiWin/main/KiWin.ps1'))) -DryRun
 
-Undo the update policy later:
+Remove the Windows Update policy that KiWin versions before this one set:
     irm https://raw.githubusercontent.com/KabosuNeko/KiWin/main/Assets/debloat_scripts/undo_update_policy.ps1 | iex
 #>
 [CmdletBinding()]
@@ -151,8 +151,8 @@ function Get-KiWinScripts {
     $dir = Join-Path $work 'scripts'
     Remove-Item -LiteralPath $dir -Recurse -Force -ErrorAction SilentlyContinue
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
-    foreach ($name in 'create_restore_point.ps1', 'edge_vanisher.ps1', 'update_policy_changer.ps1',
-                      'unpin_taskbar_start.ps1', 'start2_blank.bin') {
+    foreach ($name in 'create_restore_point.ps1', 'edge_vanisher.ps1', 'unpin_taskbar_start.ps1', 'start2_blank.bin',
+                      'undo_update_policy.ps1') {
         Invoke-WebRequest "$RawBase/Assets/debloat_scripts/$name" -OutFile (Join-Path $dir $name) -UseBasicParsing
     }
     return $dir
@@ -228,6 +228,17 @@ function Get-SupportedTweaks {
     $Names | Where-Object { $text -match ('"' + [regex]::Escape($_) + '"\s*:') }
 }
 
+# WinUtil's "Apply Recommended" Windows Update button is not reachable through -Config,
+# so its function is copied out of the verified WinUtil file into a script of its own.
+function New-WinUtilUpdatesScript([string]$WinUtilPath, [string]$OutFile) {
+    $ast = [Management.Automation.Language.Parser]::ParseFile($WinUtilPath, [ref]$null, [ref]$null)
+    $fn = $ast.Find({ param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Invoke-WPFUpdatessecurity' }, $true)
+    if (-not $fn) { return $false }
+    # Write-WinUtilLog belongs to WinUtil's window; the function's Write-Host lines already show progress.
+    [IO.File]::WriteAllText($OutFile, "function Write-WinUtilLog { }`n$($fn.Extent.Text)`nInvoke-WPFUpdatessecurity`n", [Text.UTF8Encoding]::new($false))
+    return $true
+}
+
 # Signed-in OneDrive: removing it would leave cloud-only files unreachable on this PC.
 function Test-OneDriveInUse {
     $accounts = Get-ChildItem 'HKCU:\Software\Microsoft\OneDrive\Accounts' -ErrorAction SilentlyContinue
@@ -283,7 +294,6 @@ $doBrowser = [bool]$browserId -and $skipList -notcontains 'browser'
 # Removing Edge without installing a replacement would leave the machine with no browser.
 $doEdge = $doBrowser -and $skipList -notcontains 'edge'
 $doDebloat = $skipList -notcontains 'win11debloat'
-$doUpdates = $skipList -notcontains 'updates'
 $doUnpin = $skipList -notcontains 'unpin'
 
 $notes = @()
@@ -309,6 +319,15 @@ $droppedTweaks = @($tweakNames | Where-Object { $tweaks -notcontains $_ })
 if ($droppedTweaks.Count -gt 0) { Write-Warning "WinUtil no longer has: $($droppedTweaks -join ', ')" }
 $doWinUtil = $skipList -notcontains 'winutil' -and $tweaks.Count -gt 0
 
+$updatesScript = Join-Path $work 'winutil-updates.ps1'
+$doUpdates = $skipList -notcontains 'updates' -and (New-WinUtilUpdatesScript $paths.WinUtil $updatesScript)
+if ($skipList -notcontains 'updates' -and -not $doUpdates) {
+    Write-Warning "WinUtil $($paths.WinUtilVersion) has no Invoke-WPFUpdatessecurity; Windows Update settings are skipped."
+}
+if ($doUpdates -and $cv.EditionID -match '^Core') {
+    $notes += 'WinUtil lists its update settings for Pro, Enterprise and Education; on Home the deferrals may be ignored.'
+}
+
 # Win11Debloat already clears Start for every user, so only the taskbar is left here.
 $unpinArgs = if ($doDebloat -and $debloatFlags -contains '-ClearStartAllUsers') { @('-TaskbarOnly') } else { @() }
 
@@ -318,13 +337,24 @@ if ($driverSearch -and $driverSearch.SearchOrderConfig -eq 0) {
     $notes += "Automatic driver downloads are off (left by an older KiWin). To turn them back on:`n    irm $RawBase/Assets/debloat_scripts/undo_razer_block.ps1 | iex"
 }
 
+# Older KiWin versions installed their own update policy, with a task that re-applies it.
+# Same test as undo_update_policy.ps1, which removes it before WinUtil's settings go on.
+$oldPolicy = (Test-Path 'C:\ProgramData\KiWin\UpdatePolicy\LastApplied.txt') -or [bool](Get-ScheduledTask -ErrorAction SilentlyContinue `
+    -TaskName 'KiWinUpdatePolicyRenewal', 'WindowsUpdateSettingsTask', 'CheckSecuritySettings', 'ReapplySecuritySettings')
+if ($oldPolicy -and -not $doUpdates) {
+    $notes += "An older KiWin set a Windows Update policy that blocks drivers and .NET/Office updates. To remove it:`n    irm $RawBase/Assets/debloat_scripts/undo_update_policy.ps1 | iex"
+}
+
 $steps = @()
 if ($doRestore) { $steps += 'System Restore point (you are asked before continuing if it fails)' }
 if ($doBrowser) { $steps += "Install $Browser ($browserId)" }
 if ($doEdge) { $steps += 'Remove Microsoft Edge (your Edge profile data is kept)' }
 if ($doWinUtil) { $steps += "WinUtil tweaks ($($tweaks.Count)): $($tweaks -replace '^WPFTweaks' -join ', ')" }
+if ($doUpdates) {
+    if ($oldPolicy) { $steps += 'Remove the Windows Update policy and task an older KiWin installed' }
+    $steps += 'Windows Update, WinUtil "Apply Recommended": feature updates 365 days late, quality updates 4 days late, no drivers from Windows Update, ask before installing'
+}
 if ($doDebloat) { $steps += "Win11Debloat ($($debloatFlags.Count) flags)$(if ($doSysprep) { ' + sysprep pass' } else { '' })" }
-if ($doUpdates) { $steps += 'Windows Update: stay on the current feature release, delay quality updates 4 days' }
 if ($doUnpin) { $steps += $(if ($unpinArgs) { 'Unpin taskbar' } else { 'Unpin taskbar and Start' }) }
 
 Write-Host "Windows: $osName (build $($cv.CurrentBuildNumber))"
@@ -407,6 +437,16 @@ try {
         $null = Invoke-ChildScript $paths.WinUtil @('-Config', $winutilConfig) -TimeoutMinutes 25
     }
 
+    # Before Win11Debloat, whose -PreventUpdateAutoReboot WinUtil's function would otherwise remove.
+    if ($doUpdates) {
+        if ($oldPolicy) {
+            Write-Host '==> Remove the older KiWin update policy'
+            $null = Invoke-ChildScript (Join-Path $scripts 'undo_update_policy.ps1')
+        }
+        Write-Host '==> Windows Update (WinUtil Apply Recommended)'
+        $null = Invoke-ChildScript $updatesScript
+    }
+
     if ($doDebloat) {
         Write-Host '==> Win11Debloat'
         $null = Invoke-ChildScript $paths.Win11Debloat ($debloatFlags + $debloatLogArgs) -TimeoutMinutes 20
@@ -419,11 +459,6 @@ try {
                 Write-Warning "Sysprep pass failed: $($_.Exception.Message) (the current user is already debloated)."
             }
         }
-    }
-
-    if ($doUpdates) {
-        Write-Host '==> Windows Update policy'
-        $null = Invoke-ChildScript (Join-Path $scripts 'update_policy_changer.ps1')
     }
 
     if ($doUnpin) {
