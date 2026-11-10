@@ -318,10 +318,6 @@ if ($driverSearch -and $driverSearch.SearchOrderConfig -eq 0) {
     $notes += "Automatic driver downloads are off (left by an older KiWin). To turn them back on:`n    irm $RawBase/Assets/debloat_scripts/undo_razer_block.ps1 | iex"
 }
 
-if ($doBrowser -and -not $DryRun -and -not (Initialize-Winget)) {
-    throw 'winget is required to install the browser. Install App Installer from the Store, or use -Skip browser.'
-}
-
 $steps = @()
 if ($doRestore) { $steps += 'System Restore point (you are asked before continuing if it fails)' }
 if ($doBrowser) { $steps += "Install $Browser ($browserId)" }
@@ -355,6 +351,11 @@ if (-not $Yes) {
         Write-Host 'Aborted.'
         return
     }
+}
+
+# After YES: registering App Installer is already a change to the system.
+if ($doBrowser -and -not (Initialize-Winget)) {
+    throw 'winget is required to install the browser. Install App Installer from the Store, or use -Skip browser.'
 }
 
 [IO.File]::WriteAllText($winutilConfig, (ConvertTo-Json @($tweaks) -Compress), [Text.UTF8Encoding]::new($false))
